@@ -3,16 +3,16 @@ project(Aluminum)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(aluminum src/main.cpp src/CustomAluminumListener.cpp)
+add_executable(aluminum src/main.cpp)
 
-# for the generated lexer/parser with antlr
-include_directories(front_end/gen)
-
-# for the antler dependencies
-set(ANTLR4_INSTALL ON)
-add_subdirectory(antlr4/runtime/Cpp)
-include_directories(antlr4/runtime/Cpp/runtime/src)
-link_libraries(LIBANTLR4)
+## for the generated lexer/parser with antlr
+#include_directories(front_end/gen)
+#
+## for the antler dependencies
+#set(ANTLR4_INSTALL ON)
+#add_subdirectory(antlr4/runtime/Cpp)
+#include_directories(antlr4/runtime/Cpp/runtime/src)
+#link_libraries(LIBANTLR4)
 
 
 #message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
@@ -29,3 +29,14 @@ link_libraries(LIBANTLR4)
 #add_dependencies( aluminum antlr4_shared )
 #
 #target_link_libraries( aluminum PRIVATE antlr4_shared)
+
+
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+
+LIST( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
+# ...
+SET (CMAKE_CXX_STANDARD 14)
+
+# add external build for antlrcpp
+include( ExternalAntlr4Cpp )
+
