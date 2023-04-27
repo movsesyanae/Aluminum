@@ -4,6 +4,7 @@
 #include "ANTLRInputStream.h"
 #include "AluminumLexer.h"
 #include "AluminumParser.h"
+//#include "CustomAluminumListener.cpp"
 
 int main() {
     std::ifstream stream;
@@ -15,5 +16,12 @@ int main() {
     Aluminum::AluminumParser parser(&tokens);
 
     std::cout << "Hello, World!" << std::endl;
+//    for(antlr4::Token* tok: tokens.getTokens()) {
+//        std::cout << "1";
+//        std::cout << tok->toString();
+//    }
+
+//    antlr4::Token* tok = parser.getCurrentToken();
+//    std::cout << tok->toString();
     return 0;
 }

@@ -2,3 +2,5 @@ build
 cmake-build-debug
 .idea
 dist
+external_library_builds/antlr4/*
+external_library_builds/llvm/*

@@ -1,0 +1,6 @@
+[submodule "llvm-project"]
+	path = external_libraries/llvm-project
+	url = git@github.com:llvm/llvm-project.git
+[submodule "external_libraries/antlr/antlr4"]
+	path = external_libraries/antlr4
+	url = git@github.com:antlr/antlr4.git

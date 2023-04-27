@@ -1,4 +1,4 @@
-main() {
+def func main() {
 
     take int x;
 
