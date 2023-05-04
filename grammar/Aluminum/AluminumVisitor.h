@@ -26,6 +26,10 @@ public:
 
     virtual std::any visitFunction_header(AluminumParser::Function_headerContext *context) = 0;
 
+    virtual std::any visitFunction_identifier(AluminumParser::Function_identifierContext *context) = 0;
+
+    virtual std::any visitFunction_variables(AluminumParser::Function_variablesContext *context) = 0;
+
     virtual std::any visitBlock(AluminumParser::BlockContext *context) = 0;
 
     virtual std::any visitStatement(AluminumParser::StatementContext *context) = 0;

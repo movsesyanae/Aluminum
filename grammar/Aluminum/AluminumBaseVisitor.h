@@ -29,6 +29,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitFunction_identifier(AluminumParser::Function_identifierContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitFunction_variables(AluminumParser::Function_variablesContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitBlock(AluminumParser::BlockContext *ctx) override {
     return visitChildren(ctx);
   }

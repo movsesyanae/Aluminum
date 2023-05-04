@@ -1,10 +1,14 @@
 grammar Aluminum;
 
-program: function+;
+program: function+ EOF;
 
 function: function_header block;
 
-function_header: DEFINE FUNCTION (MAIN | IDENTIFIER) LPAREN RPAREN (ARROW type)?;
+function_header: DEFINE FUNCTION function_identifier LPAREN function_variables? RPAREN (ARROW type)?;
+
+function_identifier: MAIN | IDENTIFIER;
+
+function_variables: type IDENTIFIER (COMMA type IDENTIFIER)*;
 
 block: LCURL statement* RCURL;
 
@@ -50,6 +54,7 @@ custom_type: 'cust';
 
 
 // LEXER PART
+//EOF: 'DONE';
 
 // tokens
 LPAREN: '(';
@@ -59,6 +64,7 @@ LCURL: '{';
 RCURL: '}';
 ARROW: '->';
 DOR: '.';
+COMMA: ',';
 
 EQUALS: '=';
 

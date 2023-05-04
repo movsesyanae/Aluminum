@@ -27,6 +27,12 @@ public:
   virtual void enterFunction_header(AluminumParser::Function_headerContext * /*ctx*/) override { }
   virtual void exitFunction_header(AluminumParser::Function_headerContext * /*ctx*/) override { }
 
+  virtual void enterFunction_identifier(AluminumParser::Function_identifierContext * /*ctx*/) override { }
+  virtual void exitFunction_identifier(AluminumParser::Function_identifierContext * /*ctx*/) override { }
+
+  virtual void enterFunction_variables(AluminumParser::Function_variablesContext * /*ctx*/) override { }
+  virtual void exitFunction_variables(AluminumParser::Function_variablesContext * /*ctx*/) override { }
+
   virtual void enterBlock(AluminumParser::BlockContext * /*ctx*/) override { }
   virtual void exitBlock(AluminumParser::BlockContext * /*ctx*/) override { }
 

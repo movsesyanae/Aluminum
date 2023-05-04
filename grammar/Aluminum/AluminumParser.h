@@ -14,17 +14,18 @@ class  AluminumParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, LPAREN = 2, RPAREN = 3, EOL = 4, LCURL = 5, RCURL = 6, ARROW = 7, 
-    DOR = 8, EQUALS = 9, TAKE = 10, SET = 11, MAIN = 12, IF = 13, ELSE = 14, 
-    WHILE = 15, DEFINE = 16, FUNCTION = 17, VARIABLE = 18, INT = 19, IDENTIFIER = 20, 
-    MUL = 21, DIV = 22, ADD = 23, SUB = 24, INT_LITERAL = 25, WS = 26
+    DOR = 8, COMMA = 9, EQUALS = 10, TAKE = 11, SET = 12, MAIN = 13, IF = 14, 
+    ELSE = 15, WHILE = 16, DEFINE = 17, FUNCTION = 18, VARIABLE = 19, INT = 20, 
+    IDENTIFIER = 21, MUL = 22, DIV = 23, ADD = 24, SUB = 25, INT_LITERAL = 26, 
+    WS = 27
   };
 
   enum {
-    RuleProgram = 0, RuleFunction = 1, RuleFunction_header = 2, RuleBlock = 3, 
-    RuleStatement = 4, RuleIf_block = 5, RuleElse_block = 6, RuleWhile_block = 7, 
-    RuleDeclare_op = 8, RuleSet_op = 9, RuleExpression = 10, RuleFunction_call = 11, 
-    RuleValue = 12, RuleLiteral_val = 13, RuleVar_val = 14, RuleType = 15, 
-    RuleDefault_type = 16, RuleCustom_type = 17
+    RuleProgram = 0, RuleFunction = 1, RuleFunction_header = 2, RuleFunction_identifier = 3, 
+    RuleFunction_variables = 4, RuleBlock = 5, RuleStatement = 6, RuleIf_block = 7, 
+    RuleElse_block = 8, RuleWhile_block = 9, RuleDeclare_op = 10, RuleSet_op = 11, 
+    RuleExpression = 12, RuleFunction_call = 13, RuleValue = 14, RuleLiteral_val = 15, 
+    RuleVar_val = 16, RuleType = 17, RuleDefault_type = 18, RuleCustom_type = 19
   };
 
   explicit AluminumParser(antlr4::TokenStream *input);
@@ -47,6 +48,8 @@ public:
   class ProgramContext;
   class FunctionContext;
   class Function_headerContext;
+  class Function_identifierContext;
+  class Function_variablesContext;
   class BlockContext;
   class StatementContext;
   class If_blockContext;
@@ -67,6 +70,7 @@ public:
   public:
     ProgramContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *EOF();
     std::vector<FunctionContext *> function();
     FunctionContext* function(size_t i);
 
@@ -101,10 +105,10 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *DEFINE();
     antlr4::tree::TerminalNode *FUNCTION();
+    Function_identifierContext *function_identifier();
     antlr4::tree::TerminalNode *LPAREN();
     antlr4::tree::TerminalNode *RPAREN();
-    antlr4::tree::TerminalNode *MAIN();
-    antlr4::tree::TerminalNode *IDENTIFIER();
+    Function_variablesContext *function_variables();
     antlr4::tree::TerminalNode *ARROW();
     TypeContext *type();
 
@@ -116,6 +120,42 @@ public:
   };
 
   Function_headerContext* function_header();
+
+  class  Function_identifierContext : public antlr4::ParserRuleContext {
+  public:
+    Function_identifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *MAIN();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Function_identifierContext* function_identifier();
+
+  class  Function_variablesContext : public antlr4::ParserRuleContext {
+  public:
+    Function_variablesContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<TypeContext *> type();
+    TypeContext* type(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
+    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COMMA();
+    antlr4::tree::TerminalNode* COMMA(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Function_variablesContext* function_variables();
 
   class  BlockContext : public antlr4::ParserRuleContext {
   public:

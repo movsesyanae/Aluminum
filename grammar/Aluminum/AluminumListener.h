@@ -25,6 +25,12 @@ public:
   virtual void enterFunction_header(AluminumParser::Function_headerContext *ctx) = 0;
   virtual void exitFunction_header(AluminumParser::Function_headerContext *ctx) = 0;
 
+  virtual void enterFunction_identifier(AluminumParser::Function_identifierContext *ctx) = 0;
+  virtual void exitFunction_identifier(AluminumParser::Function_identifierContext *ctx) = 0;
+
+  virtual void enterFunction_variables(AluminumParser::Function_variablesContext *ctx) = 0;
+  virtual void exitFunction_variables(AluminumParser::Function_variablesContext *ctx) = 0;
+
   virtual void enterBlock(AluminumParser::BlockContext *ctx) = 0;
   virtual void exitBlock(AluminumParser::BlockContext *ctx) = 0;
 
