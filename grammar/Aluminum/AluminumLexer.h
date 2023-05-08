@@ -14,10 +14,10 @@ class  AluminumLexer : public antlr4::Lexer {
 public:
   enum {
     T__0 = 1, LPAREN = 2, RPAREN = 3, EOL = 4, LCURL = 5, RCURL = 6, ARROW = 7, 
-    DOR = 8, COMMA = 9, EQUALS = 10, TAKE = 11, SET = 12, MAIN = 13, IF = 14, 
-    ELSE = 15, WHILE = 16, DEFINE = 17, FUNCTION = 18, VARIABLE = 19, INT = 20, 
-    IDENTIFIER = 21, MUL = 22, DIV = 23, ADD = 24, SUB = 25, INT_LITERAL = 26, 
-    WS = 27
+    DOR = 8, COMMA = 9, GREATEREQUAL = 10, GREATER = 11, LESSEQUAL = 12, 
+    LESS = 13, EQUALS = 14, TAKE = 15, SET = 16, MAIN = 17, IF = 18, ELSE = 19, 
+    WHILE = 20, DEFINE = 21, FUNCTION = 22, VARIABLE = 23, INT = 24, IDENTIFIER = 25, 
+    MUL = 26, DIV = 27, ADD = 28, SUB = 29, INT_LITERAL = 30, WS = 31
   };
 
   explicit AluminumLexer(antlr4::CharStream *input);

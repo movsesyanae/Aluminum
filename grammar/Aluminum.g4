@@ -30,12 +30,11 @@ expression
     : value
     | LPAREN expression RPAREN
     | function_call
-    | expression EQUALS EQUALS expression
-    | expression MUL expression
-    | expression DIV expression
-    | expression ADD expression
-    | expression SUB expression
+    | expression comp_op expression
+    | expression arith_op expression
     ;
+arith_op: MUL | DIV | ADD | SUB;
+comp_op: EQUALS | GREATEREQUAL | LESSEQUAL | GREATER | LESS;
 function_call: IDENTIFIER LPAREN RPAREN;
 
 value
@@ -65,6 +64,10 @@ RCURL: '}';
 ARROW: '->';
 DOR: '.';
 COMMA: ',';
+GREATEREQUAL: '>=';
+GREATER: '>';
+LESSEQUAL: '<=';
+LESS: '<';
 
 EQUALS: '=';
 

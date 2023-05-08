@@ -55,6 +55,12 @@ public:
   virtual void enterExpression(AluminumParser::ExpressionContext *ctx) = 0;
   virtual void exitExpression(AluminumParser::ExpressionContext *ctx) = 0;
 
+  virtual void enterArith_op(AluminumParser::Arith_opContext *ctx) = 0;
+  virtual void exitArith_op(AluminumParser::Arith_opContext *ctx) = 0;
+
+  virtual void enterComp_op(AluminumParser::Comp_opContext *ctx) = 0;
+  virtual void exitComp_op(AluminumParser::Comp_opContext *ctx) = 0;
+
   virtual void enterFunction_call(AluminumParser::Function_callContext *ctx) = 0;
   virtual void exitFunction_call(AluminumParser::Function_callContext *ctx) = 0;
 

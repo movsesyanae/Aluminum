@@ -46,6 +46,10 @@ public:
 
     virtual std::any visitExpression(AluminumParser::ExpressionContext *context) = 0;
 
+    virtual std::any visitArith_op(AluminumParser::Arith_opContext *context) = 0;
+
+    virtual std::any visitComp_op(AluminumParser::Comp_opContext *context) = 0;
+
     virtual std::any visitFunction_call(AluminumParser::Function_callContext *context) = 0;
 
     virtual std::any visitValue(AluminumParser::ValueContext *context) = 0;

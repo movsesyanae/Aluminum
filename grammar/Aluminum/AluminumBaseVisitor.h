@@ -69,6 +69,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitArith_op(AluminumParser::Arith_opContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitComp_op(AluminumParser::Comp_opContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitFunction_call(AluminumParser::Function_callContext *ctx) override {
     return visitChildren(ctx);
   }

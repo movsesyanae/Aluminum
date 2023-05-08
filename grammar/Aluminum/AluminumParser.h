@@ -14,18 +14,19 @@ class  AluminumParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, LPAREN = 2, RPAREN = 3, EOL = 4, LCURL = 5, RCURL = 6, ARROW = 7, 
-    DOR = 8, COMMA = 9, EQUALS = 10, TAKE = 11, SET = 12, MAIN = 13, IF = 14, 
-    ELSE = 15, WHILE = 16, DEFINE = 17, FUNCTION = 18, VARIABLE = 19, INT = 20, 
-    IDENTIFIER = 21, MUL = 22, DIV = 23, ADD = 24, SUB = 25, INT_LITERAL = 26, 
-    WS = 27
+    DOR = 8, COMMA = 9, GREATEREQUAL = 10, GREATER = 11, LESSEQUAL = 12, 
+    LESS = 13, EQUALS = 14, TAKE = 15, SET = 16, MAIN = 17, IF = 18, ELSE = 19, 
+    WHILE = 20, DEFINE = 21, FUNCTION = 22, VARIABLE = 23, INT = 24, IDENTIFIER = 25, 
+    MUL = 26, DIV = 27, ADD = 28, SUB = 29, INT_LITERAL = 30, WS = 31
   };
 
   enum {
     RuleProgram = 0, RuleFunction = 1, RuleFunction_header = 2, RuleFunction_identifier = 3, 
     RuleFunction_variables = 4, RuleBlock = 5, RuleStatement = 6, RuleIf_block = 7, 
     RuleElse_block = 8, RuleWhile_block = 9, RuleDeclare_op = 10, RuleSet_op = 11, 
-    RuleExpression = 12, RuleFunction_call = 13, RuleValue = 14, RuleLiteral_val = 15, 
-    RuleVar_val = 16, RuleType = 17, RuleDefault_type = 18, RuleCustom_type = 19
+    RuleExpression = 12, RuleArith_op = 13, RuleComp_op = 14, RuleFunction_call = 15, 
+    RuleValue = 16, RuleLiteral_val = 17, RuleVar_val = 18, RuleType = 19, 
+    RuleDefault_type = 20, RuleCustom_type = 21
   };
 
   explicit AluminumParser(antlr4::TokenStream *input);
@@ -58,6 +59,8 @@ public:
   class Declare_opContext;
   class Set_opContext;
   class ExpressionContext;
+  class Arith_opContext;
+  class Comp_opContext;
   class Function_callContext;
   class ValueContext;
   class Literal_valContext;
@@ -298,8 +301,22 @@ public:
     ExpressionContext* expression(size_t i);
     antlr4::tree::TerminalNode *RPAREN();
     Function_callContext *function_call();
-    std::vector<antlr4::tree::TerminalNode *> EQUALS();
-    antlr4::tree::TerminalNode* EQUALS(size_t i);
+    Comp_opContext *comp_op();
+    Arith_opContext *arith_op();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ExpressionContext* expression();
+  ExpressionContext* expression(int precedence);
+  class  Arith_opContext : public antlr4::ParserRuleContext {
+  public:
+    Arith_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *MUL();
     antlr4::tree::TerminalNode *DIV();
     antlr4::tree::TerminalNode *ADD();
@@ -312,8 +329,27 @@ public:
    
   };
 
-  ExpressionContext* expression();
-  ExpressionContext* expression(int precedence);
+  Arith_opContext* arith_op();
+
+  class  Comp_opContext : public antlr4::ParserRuleContext {
+  public:
+    Comp_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *EQUALS();
+    antlr4::tree::TerminalNode *GREATEREQUAL();
+    antlr4::tree::TerminalNode *LESSEQUAL();
+    antlr4::tree::TerminalNode *GREATER();
+    antlr4::tree::TerminalNode *LESS();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Comp_opContext* comp_op();
+
   class  Function_callContext : public antlr4::ParserRuleContext {
   public:
     Function_callContext(antlr4::ParserRuleContext *parent, size_t invokingState);

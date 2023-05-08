@@ -22,18 +22,13 @@ endforeach(generated_file)
 
 # Create variables for LLVM
 set(llvm-lib ${CMAKE_SOURCE_DIR}/external_library_builds/llvm/install/lib)
-set(llvm-include ${CMAKE_SOURCE_DIR}/external_library_builds/llvm/install/include)
-# Putting all the generated lexing/parsing files in a list
-FILE(GLOB lib_files ${llvm-lib}/*.a)
-foreach(lib_file ${lib_files})
-    list(APPEND llvm-lib-files ${lib_file})
-    set_source_files_properties(
-            ${lib_file}
-            PROPERTIES
-            COMPILE_FLAGS -Wno-overloaded-virtual
-    )
-endforeach(lib_file)
-
+set(LLVM_DIR ${llvm-lib}/cmake/llvm)
+find_package(LLVM REQUIRED CONFIG PATHS ${llvm-lib}/cmake/llvm)
+include_directories(${LLVM_INCLUDE_DIRS})
+add_definitions(${LLVM_DEFINITIONS})
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 add_executable(aluminum src/main.cpp ${antlr4-generated-files} src/CustomAluminumVisitor.cpp)
 
@@ -43,9 +38,10 @@ target_link_directories(aluminum PUBLIC ${antlr4-lib})
 target_link_libraries(aluminum ${antlr4-lib}/libantlr4-runtime.a)
 
 # for LLVM
-target_include_directories(aluminum PUBLIC ${llvm-include})
-target_link_directories(aluminum PUBLIC ${llvm-lib})
-target_link_libraries(aluminum ${llvm-lib-files})
+target_link_libraries(aluminum ${llvm_libs})
+#target_include_directories(aluminum PUBLIC ${llvm-include})
+#target_link_directories(aluminum PUBLIC ${llvm-lib})
+#target_link_libraries(aluminum ${llvm-lib-files})
 #target_link_libraries(aluminum LLVMSupport)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
