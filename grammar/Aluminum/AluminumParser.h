@@ -15,10 +15,11 @@ public:
   enum {
     T__0 = 1, LPAREN = 2, RPAREN = 3, EOL = 4, LCURL = 5, RCURL = 6, ARROW = 7, 
     DOT = 8, COMMA = 9, GREATEREQUAL = 10, GREATER = 11, LESSEQUAL = 12, 
-    LESS = 13, EQUALS = 14, TAKE = 15, SET = 16, MAIN = 17, IF = 18, ELSE = 19, 
-    WHILE = 20, DEFINE = 21, FUNCTION = 22, VARIABLE = 23, INT = 24, FLOAT = 25, 
-    BOOL = 26, TRUE = 27, FALSE = 28, IDENTIFIER = 29, MUL = 30, DIV = 31, 
-    ADD = 32, SUB = 33, INT_LITERAL = 34, FLOAT_LITERAL = 35, WS = 36
+    LESS = 13, NOT = 14, EQUALS = 15, TAKE = 16, SET = 17, MAIN = 18, IF = 19, 
+    ELSE = 20, WHILE = 21, DEFINE = 22, FUNCTION = 23, VARIABLE = 24, INT = 25, 
+    FLOAT = 26, BOOL = 27, TRUE = 28, FALSE = 29, IDENTIFIER = 30, MUL = 31, 
+    DIV = 32, ADD = 33, SUB = 34, INT_LITERAL = 35, FLOAT_LITERAL = 36, 
+    WS = 37
   };
 
   enum {
@@ -321,6 +322,7 @@ public:
   public:
     Comp_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *NOT();
     antlr4::tree::TerminalNode *EQUALS();
     antlr4::tree::TerminalNode *GREATEREQUAL();
     antlr4::tree::TerminalNode *LESSEQUAL();

@@ -179,6 +179,9 @@ namespace Aluminum {
             std::any ret;
             for(auto statement: context->statement()) {
                 ret = visitStatement(statement);
+                if(!ret.has_value()) {
+                    return LogError("Statement didn't return value");
+                }
             }
             return ret;
         }
@@ -195,58 +198,49 @@ namespace Aluminum {
                 return LogError("couldn't evaluate expression in if condition");
             }
             Value* condition = std::any_cast<Value*>(temp_condition);
-            if(condition->getType() != Type::getInt8Ty(*TheContext)) {
+            if(condition->getType() != Type::getInt1Ty(*TheContext)) {
                 return LogError("condition did not evaluate to a boolean in the if call");
             }
             // creating false value for easy comparison
-            Value* false_val = ConstantInt::get(*TheContext, APInt(8, 0, false));
+//            Value* false_val = ConstantInt::get(*TheContext, APInt(1, 0, false));
 
-            //comparing the return value of the expression to false
-            // comparing if it's not equal to false
-            condition = Builder->CreateICmpNE(condition, false_val, "ifcond");
+//            //comparing the return value of the expression to false
+//            // comparing if it's not equal to false
+//            condition = Builder->CreateICmpNE(condition, false_val, "ifcond");
 
             Function *TheFunction = Builder->GetInsertBlock()->getParent();
 
             // Create blocks for the then and else cases.  Insert the 'then' block at the
             // end of the function.
             BasicBlock *ThenBB = BasicBlock::Create(*TheContext, "then", TheFunction);
-            BasicBlock *ElseBB = BasicBlock::Create(*TheContext, "else", TheFunction);
-            BasicBlock *MergeBB = BasicBlock::Create(*TheContext, "ifcont", TheFunction);
+            BasicBlock *ElseBB = BasicBlock::Create(*TheContext, "else");
+            BasicBlock *MergeBB = BasicBlock::Create(*TheContext, "ifcont");
 
             Builder->CreateCondBr(condition, ThenBB, ElseBB);
 
             // Emit then value.
             Builder->SetInsertPoint(ThenBB);
-
-            std::any temp_then = visitStatement(context->block()->statement()[0]);
-            if(!temp_then.has_value()) {
-                std::cout << context->block()->statement()[0]->getText() << std::endl;
-                std::cout << "couldn't evaluate block inside if but continuing?" << std::endl;
-
+            visitBlock(context->block());
+//            std::any temp_then = visitStatement(context->block()->statement()[0]);
+//            if(!temp_then.has_value()) {
+//                std::cout << context->block()->statement()[0]->getText() << std::endl;
+//                std::cout << "couldn't evaluate block inside if but continuing?" << std::endl;
 //                return LogError("Couldn't evaluate block inside if");
-            }
-            Value *ThenV = std::any_cast<Value*>(temp_then);
-//            Value *ThenV = nullptr;
-
+//            }
             Builder->CreateBr(MergeBB);
-            // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
-//            ThenBB = Builder->GetInsertBlock();
-//
-//            // Emit else block.
-//            TheFunction->insert(TheFunction->end(), ElseBB);
-            Builder->SetInsertPoint(ElseBB);
 
-            std::any temp_else = visitElse_block(context->else_block());
+            // Emit else block.
+            TheFunction->insert(TheFunction->end(), ElseBB);
+            Builder->SetInsertPoint(ElseBB);
+            if(context->else_block()) {
+                visitElse_block(context->else_block());
+            }
+//            std::any temp_else = visitElse_block(context->else_block());
 //            Value *ElseV = std::any_cast<Value*>(temp_else);
 //            Value *ElseV = nullptr;
 
-
-            // codegen of 'Else' can change the current block, update ElseBB for the PHI.
-//            ElseBB = Builder->GetInsertBlock();
-//            // Emit merge block.
-//            TheFunction->insert(TheFunction->end(), MergeBB);
-//            Builder->SetInsertPoint(MergeBB);
-//            return PN;
+            // after the then and else block, we branch to the merge block
+            TheFunction->insert(TheFunction->end(), MergeBB);
             Builder->SetInsertPoint(MergeBB);
             return condition;
 
@@ -334,9 +328,115 @@ namespace Aluminum {
                 return handle_arith_op(sub, context);
             }
             else if(context->comp_op()) {
-                return LogError("comparitive operations are not yet supported");
+                return handle_comp_op(context);
             }
             return visitChildren(context);
+        }
+
+        std::any handle_comp_op(Aluminum::AluminumParser::ExpressionContext *context) {
+            std::any temp_l = visitExpression(context->expression(0));
+            std::any temp_r = visitExpression(context->expression(1));
+            if(temp_l.has_value()) {
+                std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
+            }
+            if(temp_r.has_value()) {
+                std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
+            }
+            if(!temp_l.has_value() || !temp_r.has_value()) {
+                // error happened
+                return LogError("error in evaluating expression");
+            }
+            // extract values from std::any
+            Value* l_val = std::any_cast<Value*>(temp_l);
+            Value* r_val = std::any_cast<Value*>(temp_r);
+
+            if(l_val->getType() != r_val->getType()) {
+                // error happened
+                // no implicit casting here
+                return LogError("tried comparative operation on mismatched types");
+            }
+
+            Value* ret_val;
+            char operation = context->comp_op()->getText()[0];
+            int op_length = context->comp_op()->getText().size();
+            if(l_val->getType() == Type::getDoubleTy(*TheContext)) {
+                // float comparisons
+                switch(operation) {
+                    case '<':
+                        if(op_length == 1) {
+                            ret_val = Builder->CreateFCmpOLT(l_val, r_val, "cmp-fp-lt");
+                        } else {
+                            ret_val = Builder->CreateFCmpOLE(l_val, r_val, "cmp-fp-le");
+                        }
+                        break;
+                    case '>':
+                        if(op_length == 1) {
+                            ret_val = Builder->CreateFCmpOGT(l_val, r_val, "cmp-fp-gt");
+                        } else {
+                            ret_val = Builder->CreateFCmpOGE(l_val, r_val, "cmp-fp-ge");
+                        }
+                        break;
+                    case '=':
+                        ret_val = Builder->CreateFCmpOEQ(l_val, r_val, "cmp-int-eq");
+                        break;
+                    case '~':
+                        ret_val = Builder->CreateFCmpONE(l_val, r_val, "cmp-int-eq");
+                        break;
+                }
+            } else if(l_val->getType() == Type::getInt32Ty(*TheContext)){
+                // integer comparisons
+                switch(operation) {
+                    case '<':
+                        if(op_length == 1) {
+                            ret_val = Builder->CreateICmpSLT(l_val, r_val, "cmp-int-lt");
+                        } else {
+                            ret_val = Builder->CreateICmpSLE(l_val, r_val, "cmp-int-le");
+                        }
+                        break;
+                    case '>':
+                        if(op_length == 1) {
+                            ret_val = Builder->CreateICmpSGT(l_val, r_val, "cmp-int-gt");
+                        } else {
+                            ret_val = Builder->CreateICmpSGE(l_val, r_val, "cmp-int-ge");
+                        }
+                        break;
+                    case '=':
+                        ret_val = Builder->CreateICmpEQ(l_val, r_val, "cmp-int-eq");
+                        break;
+                    case '~':
+                        ret_val = Builder->CreateICmpNE(l_val, r_val, "cmp-int-eq");
+                        break;
+                }
+            } else {
+                // boolean comparison
+                switch(operation) {
+                    case '<':
+                        if(op_length == 1) {
+                            ret_val = Builder->CreateICmpULT(l_val, r_val, "cmp-int-lt");
+                        } else {
+                            ret_val = Builder->CreateICmpULE(l_val, r_val, "cmp-int-le");
+                        }
+                        break;
+                    case '>':
+                        if(op_length == 1) {
+                            ret_val = Builder->CreateICmpUGT(l_val, r_val, "cmp-int-gt");
+                        } else {
+                            ret_val = Builder->CreateICmpUGE(l_val, r_val, "cmp-int-ge");
+                        }
+                        break;
+                    case '=':
+                        ret_val = Builder->CreateICmpEQ(l_val, r_val, "cmp-int-eq");
+                        break;
+                    case '~':
+                        ret_val = Builder->CreateICmpNE(l_val, r_val, "cmp-int-eq");
+                        break;
+
+                }
+            }
+            if(!ret_val) {
+                return LogError("tried illegal comparison");
+            }
+            return ret_val;
         }
 
         std::any handle_arith_op(arithmetic_operations arith_op, Aluminum::AluminumParser::ExpressionContext *context) {
@@ -430,7 +530,7 @@ namespace Aluminum {
         Type* get_expected_type(Aluminum::AluminumParser::TypeContext *context) {
             if(context->default_type()) {
                 if(context->default_type()->BOOL()) {
-                    return Type::getInt8Ty(*TheContext);
+                    return Type::getInt1Ty(*TheContext);
                 } else if(context->default_type()->FLOAT()) {
                     return Type::getDoubleTy(*TheContext);
                 } else if(context->default_type()->INT()) {
@@ -459,9 +559,9 @@ namespace Aluminum {
         std::any visitBool_literal(AluminumParser::Bool_literalContext *context) override {
             Value* val;
             if(context->TRUE()) {
-                val = ConstantInt::get(*TheContext, APInt(8, 1, false));
+                val = ConstantInt::get(*TheContext, APInt(1, 1, false));
             } else {
-                val = ConstantInt::get(*TheContext, APInt(8, 0, false));
+                val = ConstantInt::get(*TheContext, APInt(1, 0, false));
             }
             return val;
         }
@@ -474,7 +574,7 @@ namespace Aluminum {
             else if(any.has_value()) {
                 return any;
             }
-             else {
+            else {
                 return std::any();
             }
         }

@@ -39,7 +39,7 @@ expression
 //    : (ADD | SUB)
 //    | (MUL | DIV)
 //    ;
-comp_op: EQUALS | GREATEREQUAL | LESSEQUAL | GREATER | LESS;
+comp_op: (NOT EQUALS) | EQUALS | GREATEREQUAL | LESSEQUAL | GREATER | LESS;
 function_call: IDENTIFIER LPAREN RPAREN;
 
 value
@@ -75,7 +75,7 @@ GREATEREQUAL: '>=';
 GREATER: '>';
 LESSEQUAL: '<=';
 LESS: '<';
-
+NOT: '~';
 EQUALS: '=';
 
 // keywords
