@@ -24,6 +24,7 @@
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils.h"
+#include "llvm/Support/raw_os_ostream.h"
 
 #define INT_BITS 32
 
@@ -32,6 +33,7 @@ namespace Aluminum {
     class CustomAluminumVisitor : public Aluminum::AluminumVisitor {
 
     private:
+        enum arithmetic_operations {add, sub, mul, div};
         std::unique_ptr<LLVMContext> TheContext;
         std::unique_ptr<IRBuilder<>> Builder;
         std::unique_ptr<Module> TheModule;
@@ -60,9 +62,9 @@ namespace Aluminum {
 
     public:
         CustomAluminumVisitor() {
-            InitializeNativeTarget();
-            InitializeNativeTargetAsmPrinter();
-            InitializeNativeTargetAsmParser();
+//            InitializeNativeTarget();
+//            InitializeNativeTargetAsmPrinter();
+//            InitializeNativeTargetAsmParser();
 
 
             TheContext = std::make_unique<LLVMContext>();
@@ -79,6 +81,12 @@ namespace Aluminum {
                 visitFunction(function);
             }
 //            Builder.
+            std::ofstream out("test.ll");
+//            out << "should print" << std::endl;
+            raw_os_ostream out_2(out);
+            TheModule->print(out_2, nullptr);
+            out_2.flush();
+            out.close();
             return std::any();
         }
 
@@ -168,15 +176,83 @@ namespace Aluminum {
         }
 
         std::any visitBlock(Aluminum::AluminumParser::BlockContext *context) override {
-            return visitChildren(context);
+            std::any ret;
+            for(auto statement: context->statement()) {
+                ret = visitStatement(statement);
+            }
+            return ret;
         }
 
         std::any visitStatement(Aluminum::AluminumParser::StatementContext *context) override {
-            return visitChildren(context);
+            std::any v = visitChildren(context);
+            std::cout << "statrement has value? " << v.has_value()<< ": " << v.type().name() << std::endl;
+            return v;
         }
 
         std::any visitIf_block(Aluminum::AluminumParser::If_blockContext *context) override {
-            return visitChildren(context);
+            std::any temp_condition = visitExpression(context->expression());
+            if(!temp_condition.has_value()) {
+                return LogError("couldn't evaluate expression in if condition");
+            }
+            Value* condition = std::any_cast<Value*>(temp_condition);
+            if(condition->getType() != Type::getInt8Ty(*TheContext)) {
+                return LogError("condition did not evaluate to a boolean in the if call");
+            }
+            // creating false value for easy comparison
+            Value* false_val = ConstantInt::get(*TheContext, APInt(8, 0, false));
+
+            //comparing the return value of the expression to false
+            // comparing if it's not equal to false
+            condition = Builder->CreateICmpNE(condition, false_val, "ifcond");
+
+            Function *TheFunction = Builder->GetInsertBlock()->getParent();
+
+            // Create blocks for the then and else cases.  Insert the 'then' block at the
+            // end of the function.
+            BasicBlock *ThenBB = BasicBlock::Create(*TheContext, "then", TheFunction);
+            BasicBlock *ElseBB = BasicBlock::Create(*TheContext, "else", TheFunction);
+            BasicBlock *MergeBB = BasicBlock::Create(*TheContext, "ifcont", TheFunction);
+
+            Builder->CreateCondBr(condition, ThenBB, ElseBB);
+
+            // Emit then value.
+            Builder->SetInsertPoint(ThenBB);
+
+            std::any temp_then = visitStatement(context->block()->statement()[0]);
+            if(!temp_then.has_value()) {
+                std::cout << context->block()->statement()[0]->getText() << std::endl;
+                std::cout << "couldn't evaluate block inside if but continuing?" << std::endl;
+
+//                return LogError("Couldn't evaluate block inside if");
+            }
+            Value *ThenV = std::any_cast<Value*>(temp_then);
+//            Value *ThenV = nullptr;
+
+            Builder->CreateBr(MergeBB);
+            // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
+//            ThenBB = Builder->GetInsertBlock();
+//
+//            // Emit else block.
+//            TheFunction->insert(TheFunction->end(), ElseBB);
+            Builder->SetInsertPoint(ElseBB);
+
+            std::any temp_else = visitElse_block(context->else_block());
+//            Value *ElseV = std::any_cast<Value*>(temp_else);
+//            Value *ElseV = nullptr;
+
+
+            // codegen of 'Else' can change the current block, update ElseBB for the PHI.
+//            ElseBB = Builder->GetInsertBlock();
+//            // Emit merge block.
+//            TheFunction->insert(TheFunction->end(), MergeBB);
+//            Builder->SetInsertPoint(MergeBB);
+//            return PN;
+            Builder->SetInsertPoint(MergeBB);
+            return condition;
+
+
+
+//            return visitChildren(context);
         }
 
         std::any visitElse_block(Aluminum::AluminumParser::Else_blockContext *context) override {
@@ -192,6 +268,8 @@ namespace Aluminum {
             if(NamedValues[var_name]) {
                 return LogError("A variable with this name was already declared");
             }
+
+            Type* expected_type = get_expected_type(context->type());
             Value* var_val;
             if(context->expression()) {
                 // user set value for the variable
@@ -200,6 +278,9 @@ namespace Aluminum {
                     return LogError("Error evaluating expression for declare operation");
                 }
                 var_val = std::any_cast<Value*>(temp);
+                if(var_val->getType() != expected_type) {
+                    return LogError("trying to set variable that with different type in decleration");
+                }
             } else {
                 var_val = ConstantInt::get(*TheContext, APInt(32,0, true));
             }
@@ -221,14 +302,18 @@ namespace Aluminum {
             }
             Value* var_val = std::any_cast<Value*>(temp);
 
-            Value* var_alloca = NamedValues[var_name];
+            AllocaInst* var_alloca = NamedValues[var_name];
             if(!var_alloca) {
                 return LogError("trying to set variable that isn't declared");
+            } else if(var_alloca->getAllocatedType() != var_val->getType()) {
+                return LogError("trying to set variable that with different type");
             }
             Builder->CreateStore(var_val, var_alloca);
             std::cout << "successfully completed set operation\n";
             std::cout << "var name is " << var_name << " var val name is " << var_val->getName().str() << std::endl;
-            return var_val;
+            std::any x = var_val;
+            std::cout << "return from set has value? " << x.has_value() << std::endl;
+            return x;
         }
 
         std::any visitExpression(Aluminum::AluminumParser::ExpressionContext *context) override {
@@ -239,58 +324,59 @@ namespace Aluminum {
                 return visitExpression(context->expression(0));
             } else if(context->function_call()) {
                 return visitFunction_call(context->function_call());
-            } else if(context->arith_op()){
-                std::any temp_l = visitExpression(context->expression(0));
-                std::any temp_r = visitExpression(context->expression(1));
-                if(temp_l.has_value()) {
-                    std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
-                }
-                if(temp_r.has_value()) {
-                    std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
-                }
-                if(!temp_l.has_value() || !temp_r.has_value()) {
-                    // error happened
-                    return LogError("error in evaluating expression");
-                }
-                // extract values from std::any
-                Value* l_val = std::any_cast<Value*>(temp_l);
-                Value* r_val = std::any_cast<Value*>(temp_r);
-
-                if(l_val->getType() != r_val->getType()) {
-                    // error happened
-                    // no implicit casting here
-                    return LogError("tried arithmetic operation on mismatched types");
-                }
-                Value* ret_val;
-                std::cout << "The rule index is " << context->arith_op()->getText() << std::endl;
-                switch (context->arith_op()->getText()[0]) {
-                    case '*':
-                        // MUL
-                        ret_val = Builder->CreateMul(l_val, r_val, "multmp");
-                        break;
-                    case '/':
-                        // DIV
-                        ret_val = Builder->CreateSDiv(l_val, r_val, "divtmp");
-                        break;
-                    case '+':
-                        // ADD
-                        ret_val = Builder->CreateAdd(l_val, r_val, "addtmp");
-                        break;
-                    case '-':
-                        // Sub
-                        ret_val = Builder->CreateSub(l_val, r_val, "subtmp");
-                        break;
-                    default:
-                        // error happened
-                        return LogError("arithop error");
-                        break;
-                }
-                return ret_val;
-
-            } else if(context->comp_op()) {
-                return LogError("comparitive operations are not yet supported")
+            } else if(context->MUL()){
+                return handle_arith_op(mul, context);
+            } else if(context->DIV()) {
+                return handle_arith_op(div, context);
+            } else if(context->ADD()) {
+                return handle_arith_op(add, context);
+            } else if(context->SUB()) {
+                return handle_arith_op(sub, context);
+            }
+            else if(context->comp_op()) {
+                return LogError("comparitive operations are not yet supported");
             }
             return visitChildren(context);
+        }
+
+        std::any handle_arith_op(arithmetic_operations arith_op, Aluminum::AluminumParser::ExpressionContext *context) {
+            std::any temp_l = visitExpression(context->expression(0));
+            std::any temp_r = visitExpression(context->expression(1));
+            if(temp_l.has_value()) {
+                std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
+            }
+            if(temp_r.has_value()) {
+                std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
+            }
+            if(!temp_l.has_value() || !temp_r.has_value()) {
+                // error happened
+                return LogError("error in evaluating expression");
+            }
+            // extract values from std::any
+            Value* l_val = std::any_cast<Value*>(temp_l);
+            Value* r_val = std::any_cast<Value*>(temp_r);
+
+            if(l_val->getType() != r_val->getType()) {
+                // error happened
+                // no implicit casting here
+                return LogError("tried arithmetic operation on mismatched types");
+            }
+            Value* ret_val;
+            switch(arith_op) {
+                case add:
+                    ret_val = Builder->CreateAdd(l_val, r_val, "addtmp");
+                    break;
+                case sub:
+                    ret_val = Builder->CreateSub(l_val, r_val, "subtmp");
+                    break;
+                case mul:
+                    ret_val = Builder->CreateMul(l_val, r_val, "multmp");
+                    break;
+                case div:
+                    ret_val = Builder->CreateSDiv(l_val, r_val, "divtmp");
+                    break;
+            }
+            return ret_val;
         }
 
         std::any visitFunction_call(Aluminum::AluminumParser::Function_callContext *context) override {
@@ -311,10 +397,18 @@ namespace Aluminum {
         }
 
         std::any visitLiteral_val(Aluminum::AluminumParser::Literal_valContext *context) override {
+            if(context->bool_literal()) {
+                return visitBool_literal(context->bool_literal());
+            }
+
+
             Value* return_val;
             if(context->INT_LITERAL()) {
                 std::cout << "returning int literal: " << context->INT_LITERAL()->getText() << std::endl;
                 return_val = ConstantInt::get(*TheContext, APInt(INT_BITS, context->INT_LITERAL()->getText(), 10));
+            } else if(context->FLOAT_LITERAL()) {
+                std::cout << "returning float literal: " << context->FLOAT_LITERAL()->getText() << std::endl;
+                return_val = ConstantFP::get(Type::getDoubleTy(*TheContext) ,std::stof(context->FLOAT_LITERAL()->getText()));
             }
             return return_val;
         }
@@ -333,8 +427,21 @@ namespace Aluminum {
             return ret_val;
         }
 
+        Type* get_expected_type(Aluminum::AluminumParser::TypeContext *context) {
+            if(context->default_type()) {
+                if(context->default_type()->BOOL()) {
+                    return Type::getInt8Ty(*TheContext);
+                } else if(context->default_type()->FLOAT()) {
+                    return Type::getDoubleTy(*TheContext);
+                } else if(context->default_type()->INT()) {
+                    return Type::getInt32Ty(*TheContext);
+                }
+            }
+            return nullptr;
+        }
+
         std::any visitType(Aluminum::AluminumParser::TypeContext *context) override {
-            return visitChildren(context);
+            visitChildren(context);
         }
 
         std::any visitDefault_type(Aluminum::AluminumParser::Default_typeContext *context) override {
@@ -345,12 +452,32 @@ namespace Aluminum {
             return visitChildren(context);
         }
 
-        std::any visitArith_op(AluminumParser::Arith_opContext *context) override {
-            return std::any();
-        }
-
         std::any visitComp_op(AluminumParser::Comp_opContext *context) override {
             return std::any();
         }
+
+        std::any visitBool_literal(AluminumParser::Bool_literalContext *context) override {
+            Value* val;
+            if(context->TRUE()) {
+                val = ConstantInt::get(*TheContext, APInt(8, 1, false));
+            } else {
+                val = ConstantInt::get(*TheContext, APInt(8, 0, false));
+            }
+            return val;
+        }
+
+    protected:
+        std::any aggregateResult(std::any any, std::any nextResult) override {
+            if(nextResult.has_value()) {
+                return nextResult;
+            }
+            else if(any.has_value()) {
+                return any;
+            }
+             else {
+                return std::any();
+            }
+        }
+
     };
 }

@@ -28,12 +28,17 @@ set_op: SET IDENTIFIER EQUALS expression;
 
 expression
     : value
-    | LPAREN expression RPAREN
     | function_call
+//    | expression arith_op expression
+    | LPAREN expression RPAREN
+    | expression (MUL | DIV) expression
+    | expression (ADD | SUB) expression
     | expression comp_op expression
-    | expression arith_op expression
     ;
-arith_op: MUL | DIV | ADD | SUB;
+//arith_op
+//    : (ADD | SUB)
+//    | (MUL | DIV)
+//    ;
 comp_op: EQUALS | GREATEREQUAL | LESSEQUAL | GREATER | LESS;
 function_call: IDENTIFIER LPAREN RPAREN;
 
@@ -41,14 +46,16 @@ value
     : literal_val
     | var_val
     ;
-literal_val: INT_LITERAL;
+literal_val: INT_LITERAL | FLOAT_LITERAL | bool_literal;
+bool_literal:  TRUE | FALSE;
+
 var_val: IDENTIFIER;
 
 type
     : default_type
     | custom_type
     ;
-default_type: INT;
+default_type: INT | FLOAT | BOOL;
 custom_type: 'cust';
 
 
@@ -62,7 +69,7 @@ EOL: ';';
 LCURL: '{';
 RCURL: '}';
 ARROW: '->';
-DOR: '.';
+DOT: '.';
 COMMA: ',';
 GREATEREQUAL: '>=';
 GREATER: '>';
@@ -82,6 +89,10 @@ DEFINE: 'def';
 FUNCTION: 'func';
 VARIABLE: 'var';
 INT: 'int';
+FLOAT: 'float';
+BOOL: 'bool';
+TRUE: 'true';
+FALSE: 'false';
 
 
 
@@ -93,7 +104,7 @@ ADD: '+';
 SUB: '-';
 
 INT_LITERAL: '-'?[0-9]+;
-
+FLOAT_LITERAL: '-'?[0-9]+ DOT [0-9]+;
 
 
 WS: [ \r\t\n] -> skip;

@@ -69,10 +69,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitArith_op(AluminumParser::Arith_opContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual std::any visitComp_op(AluminumParser::Comp_opContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -86,6 +82,10 @@ public:
   }
 
   virtual std::any visitLiteral_val(AluminumParser::Literal_valContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitBool_literal(AluminumParser::Bool_literalContext *ctx) override {
     return visitChildren(ctx);
   }
 
