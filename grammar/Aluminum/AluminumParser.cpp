@@ -46,86 +46,94 @@ void aluminumParserInitialize() {
   auto staticData = std::make_unique<AluminumParserStaticData>(
     std::vector<std::string>{
       "program", "function", "function_header", "function_identifier", "function_variables", 
-      "block", "statement", "if_block", "else_block", "while_block", "declare_op", 
-      "set_op", "expression", "comp_op", "function_call", "value", "literal_val", 
-      "bool_literal", "var_val", "type", "default_type", "custom_type"
+      "block", "statement", "return_op", "if_block", "else_block", "while_block", 
+      "declare_op", "set_op", "expression", "comp_op", "function_call", 
+      "passed_arguments", "value", "literal_val", "bool_literal", "var_val", 
+      "type", "default_type", "custom_type"
     },
     std::vector<std::string>{
       "", "'cust'", "'('", "')'", "';'", "'{'", "'}'", "'->'", "'.'", "','", 
       "'>='", "'>'", "'<='", "'<'", "'~'", "'='", "'take'", "'set'", "'main'", 
       "'if'", "'else'", "'while'", "'def'", "'func'", "'var'", "'int'", 
-      "'float'", "'bool'", "'true'", "'false'", "", "'*'", "'/'", "'+'", 
-      "'-'"
+      "'float'", "'bool'", "'true'", "'false'", "'return'", "", "'*'", "'/'", 
+      "'+'", "'-'"
     },
     std::vector<std::string>{
       "", "", "LPAREN", "RPAREN", "EOL", "LCURL", "RCURL", "ARROW", "DOT", 
       "COMMA", "GREATEREQUAL", "GREATER", "LESSEQUAL", "LESS", "NOT", "EQUALS", 
       "TAKE", "SET", "MAIN", "IF", "ELSE", "WHILE", "DEFINE", "FUNCTION", 
-      "VARIABLE", "INT", "FLOAT", "BOOL", "TRUE", "FALSE", "IDENTIFIER", 
+      "VARIABLE", "INT", "FLOAT", "BOOL", "TRUE", "FALSE", "RETURN", "IDENTIFIER", 
       "MUL", "DIV", "ADD", "SUB", "INT_LITERAL", "FLOAT_LITERAL", "WS"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,37,191,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	4,1,38,212,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
   	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
   	14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,
-  	21,1,0,4,0,46,8,0,11,0,12,0,47,1,0,1,0,1,1,1,1,1,1,1,2,1,2,1,2,1,2,1,
-  	2,3,2,60,8,2,1,2,1,2,1,2,3,2,65,8,2,1,3,1,3,1,4,1,4,1,4,1,4,1,4,1,4,5,
-  	4,75,8,4,10,4,12,4,78,9,4,1,5,1,5,5,5,82,8,5,10,5,12,5,85,9,5,1,5,1,5,
-  	1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,3,6,100,8,6,1,7,1,7,1,7,1,
-  	7,1,7,1,7,3,7,108,8,7,1,8,1,8,1,8,3,8,113,8,8,1,9,1,9,1,9,1,9,1,9,1,9,
-  	1,10,1,10,1,10,1,10,1,10,3,10,126,8,10,1,11,1,11,1,11,1,11,1,11,1,12,
-  	1,12,1,12,1,12,1,12,1,12,1,12,3,12,140,8,12,1,12,1,12,1,12,1,12,1,12,
-  	1,12,1,12,1,12,1,12,1,12,5,12,152,8,12,10,12,12,12,155,9,12,1,13,1,13,
-  	1,13,1,13,1,13,1,13,1,13,3,13,164,8,13,1,14,1,14,1,14,1,14,1,15,1,15,
-  	3,15,172,8,15,1,16,1,16,1,16,3,16,177,8,16,1,17,1,17,1,18,1,18,1,19,1,
-  	19,3,19,185,8,19,1,20,1,20,1,21,1,21,1,21,0,1,24,22,0,2,4,6,8,10,12,14,
-  	16,18,20,22,24,26,28,30,32,34,36,38,40,42,0,5,2,0,18,18,30,30,1,0,31,
-  	32,1,0,33,34,1,0,28,29,1,0,25,27,194,0,45,1,0,0,0,2,51,1,0,0,0,4,54,1,
-  	0,0,0,6,66,1,0,0,0,8,68,1,0,0,0,10,79,1,0,0,0,12,99,1,0,0,0,14,101,1,
-  	0,0,0,16,109,1,0,0,0,18,114,1,0,0,0,20,120,1,0,0,0,22,127,1,0,0,0,24,
-  	139,1,0,0,0,26,163,1,0,0,0,28,165,1,0,0,0,30,171,1,0,0,0,32,176,1,0,0,
-  	0,34,178,1,0,0,0,36,180,1,0,0,0,38,184,1,0,0,0,40,186,1,0,0,0,42,188,
-  	1,0,0,0,44,46,3,2,1,0,45,44,1,0,0,0,46,47,1,0,0,0,47,45,1,0,0,0,47,48,
-  	1,0,0,0,48,49,1,0,0,0,49,50,5,0,0,1,50,1,1,0,0,0,51,52,3,4,2,0,52,53,
-  	3,10,5,0,53,3,1,0,0,0,54,55,5,22,0,0,55,56,5,23,0,0,56,57,3,6,3,0,57,
-  	59,5,2,0,0,58,60,3,8,4,0,59,58,1,0,0,0,59,60,1,0,0,0,60,61,1,0,0,0,61,
-  	64,5,3,0,0,62,63,5,7,0,0,63,65,3,38,19,0,64,62,1,0,0,0,64,65,1,0,0,0,
-  	65,5,1,0,0,0,66,67,7,0,0,0,67,7,1,0,0,0,68,69,3,38,19,0,69,76,5,30,0,
-  	0,70,71,5,9,0,0,71,72,3,38,19,0,72,73,5,30,0,0,73,75,1,0,0,0,74,70,1,
-  	0,0,0,75,78,1,0,0,0,76,74,1,0,0,0,76,77,1,0,0,0,77,9,1,0,0,0,78,76,1,
-  	0,0,0,79,83,5,5,0,0,80,82,3,12,6,0,81,80,1,0,0,0,82,85,1,0,0,0,83,81,
-  	1,0,0,0,83,84,1,0,0,0,84,86,1,0,0,0,85,83,1,0,0,0,86,87,5,6,0,0,87,11,
-  	1,0,0,0,88,89,3,20,10,0,89,90,5,4,0,0,90,100,1,0,0,0,91,92,3,22,11,0,
-  	92,93,5,4,0,0,93,100,1,0,0,0,94,95,3,24,12,0,95,96,5,4,0,0,96,100,1,0,
-  	0,0,97,100,3,14,7,0,98,100,3,18,9,0,99,88,1,0,0,0,99,91,1,0,0,0,99,94,
-  	1,0,0,0,99,97,1,0,0,0,99,98,1,0,0,0,100,13,1,0,0,0,101,102,5,19,0,0,102,
-  	103,5,2,0,0,103,104,3,24,12,0,104,105,5,3,0,0,105,107,3,10,5,0,106,108,
-  	3,16,8,0,107,106,1,0,0,0,107,108,1,0,0,0,108,15,1,0,0,0,109,112,5,20,
-  	0,0,110,113,3,14,7,0,111,113,3,10,5,0,112,110,1,0,0,0,112,111,1,0,0,0,
-  	113,17,1,0,0,0,114,115,5,21,0,0,115,116,5,2,0,0,116,117,3,24,12,0,117,
-  	118,5,3,0,0,118,119,3,10,5,0,119,19,1,0,0,0,120,121,5,16,0,0,121,122,
-  	3,38,19,0,122,125,5,30,0,0,123,124,5,15,0,0,124,126,3,24,12,0,125,123,
-  	1,0,0,0,125,126,1,0,0,0,126,21,1,0,0,0,127,128,5,17,0,0,128,129,5,30,
-  	0,0,129,130,5,15,0,0,130,131,3,24,12,0,131,23,1,0,0,0,132,133,6,12,-1,
-  	0,133,140,3,30,15,0,134,140,3,28,14,0,135,136,5,2,0,0,136,137,3,24,12,
-  	0,137,138,5,3,0,0,138,140,1,0,0,0,139,132,1,0,0,0,139,134,1,0,0,0,139,
-  	135,1,0,0,0,140,153,1,0,0,0,141,142,10,3,0,0,142,143,7,1,0,0,143,152,
-  	3,24,12,4,144,145,10,2,0,0,145,146,7,2,0,0,146,152,3,24,12,3,147,148,
-  	10,1,0,0,148,149,3,26,13,0,149,150,3,24,12,2,150,152,1,0,0,0,151,141,
-  	1,0,0,0,151,144,1,0,0,0,151,147,1,0,0,0,152,155,1,0,0,0,153,151,1,0,0,
-  	0,153,154,1,0,0,0,154,25,1,0,0,0,155,153,1,0,0,0,156,157,5,14,0,0,157,
-  	164,5,15,0,0,158,164,5,15,0,0,159,164,5,10,0,0,160,164,5,12,0,0,161,164,
-  	5,11,0,0,162,164,5,13,0,0,163,156,1,0,0,0,163,158,1,0,0,0,163,159,1,0,
-  	0,0,163,160,1,0,0,0,163,161,1,0,0,0,163,162,1,0,0,0,164,27,1,0,0,0,165,
-  	166,5,30,0,0,166,167,5,2,0,0,167,168,5,3,0,0,168,29,1,0,0,0,169,172,3,
-  	32,16,0,170,172,3,36,18,0,171,169,1,0,0,0,171,170,1,0,0,0,172,31,1,0,
-  	0,0,173,177,5,35,0,0,174,177,5,36,0,0,175,177,3,34,17,0,176,173,1,0,0,
-  	0,176,174,1,0,0,0,176,175,1,0,0,0,177,33,1,0,0,0,178,179,7,3,0,0,179,
-  	35,1,0,0,0,180,181,5,30,0,0,181,37,1,0,0,0,182,185,3,40,20,0,183,185,
-  	3,42,21,0,184,182,1,0,0,0,184,183,1,0,0,0,185,39,1,0,0,0,186,187,7,4,
-  	0,0,187,41,1,0,0,0,188,189,5,1,0,0,189,43,1,0,0,0,16,47,59,64,76,83,99,
-  	107,112,125,139,151,153,163,171,176,184
+  	21,2,22,7,22,2,23,7,23,1,0,4,0,50,8,0,11,0,12,0,51,1,0,1,0,1,1,1,1,1,
+  	1,1,2,1,2,1,2,1,2,1,2,3,2,64,8,2,1,2,1,2,1,2,3,2,69,8,2,1,3,1,3,1,4,1,
+  	4,1,4,1,4,1,4,1,4,5,4,79,8,4,10,4,12,4,82,9,4,1,5,1,5,5,5,86,8,5,10,5,
+  	12,5,89,9,5,1,5,1,5,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,
+  	6,1,6,3,6,107,8,6,1,7,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,3,8,118,8,8,1,9,
+  	1,9,1,9,3,9,123,8,9,1,10,1,10,1,10,1,10,1,10,1,10,1,11,1,11,1,11,1,11,
+  	1,11,3,11,136,8,11,1,12,1,12,1,12,1,12,1,12,1,13,1,13,1,13,1,13,1,13,
+  	1,13,1,13,3,13,150,8,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,
+  	1,13,5,13,162,8,13,10,13,12,13,165,9,13,1,14,1,14,1,14,1,14,1,14,1,14,
+  	1,14,3,14,174,8,14,1,15,1,15,1,15,3,15,179,8,15,1,15,1,15,1,16,1,16,1,
+  	16,5,16,186,8,16,10,16,12,16,189,9,16,1,17,1,17,3,17,193,8,17,1,18,1,
+  	18,1,18,3,18,198,8,18,1,19,1,19,1,20,1,20,1,21,1,21,3,21,206,8,21,1,22,
+  	1,22,1,23,1,23,1,23,0,1,26,24,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
+  	30,32,34,36,38,40,42,44,46,0,5,2,0,18,18,31,31,1,0,32,33,1,0,34,35,1,
+  	0,28,29,1,0,25,27,216,0,49,1,0,0,0,2,55,1,0,0,0,4,58,1,0,0,0,6,70,1,0,
+  	0,0,8,72,1,0,0,0,10,83,1,0,0,0,12,106,1,0,0,0,14,108,1,0,0,0,16,111,1,
+  	0,0,0,18,119,1,0,0,0,20,124,1,0,0,0,22,130,1,0,0,0,24,137,1,0,0,0,26,
+  	149,1,0,0,0,28,173,1,0,0,0,30,175,1,0,0,0,32,182,1,0,0,0,34,192,1,0,0,
+  	0,36,197,1,0,0,0,38,199,1,0,0,0,40,201,1,0,0,0,42,205,1,0,0,0,44,207,
+  	1,0,0,0,46,209,1,0,0,0,48,50,3,2,1,0,49,48,1,0,0,0,50,51,1,0,0,0,51,49,
+  	1,0,0,0,51,52,1,0,0,0,52,53,1,0,0,0,53,54,5,0,0,1,54,1,1,0,0,0,55,56,
+  	3,4,2,0,56,57,3,10,5,0,57,3,1,0,0,0,58,59,5,22,0,0,59,60,5,23,0,0,60,
+  	61,3,6,3,0,61,63,5,2,0,0,62,64,3,8,4,0,63,62,1,0,0,0,63,64,1,0,0,0,64,
+  	65,1,0,0,0,65,68,5,3,0,0,66,67,5,7,0,0,67,69,3,42,21,0,68,66,1,0,0,0,
+  	68,69,1,0,0,0,69,5,1,0,0,0,70,71,7,0,0,0,71,7,1,0,0,0,72,73,3,42,21,0,
+  	73,80,5,31,0,0,74,75,5,9,0,0,75,76,3,42,21,0,76,77,5,31,0,0,77,79,1,0,
+  	0,0,78,74,1,0,0,0,79,82,1,0,0,0,80,78,1,0,0,0,80,81,1,0,0,0,81,9,1,0,
+  	0,0,82,80,1,0,0,0,83,87,5,5,0,0,84,86,3,12,6,0,85,84,1,0,0,0,86,89,1,
+  	0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,90,1,0,0,0,89,87,1,0,0,0,90,91,5,
+  	6,0,0,91,11,1,0,0,0,92,93,3,22,11,0,93,94,5,4,0,0,94,107,1,0,0,0,95,96,
+  	3,24,12,0,96,97,5,4,0,0,97,107,1,0,0,0,98,99,3,14,7,0,99,100,5,4,0,0,
+  	100,107,1,0,0,0,101,102,3,26,13,0,102,103,5,4,0,0,103,107,1,0,0,0,104,
+  	107,3,16,8,0,105,107,3,20,10,0,106,92,1,0,0,0,106,95,1,0,0,0,106,98,1,
+  	0,0,0,106,101,1,0,0,0,106,104,1,0,0,0,106,105,1,0,0,0,107,13,1,0,0,0,
+  	108,109,5,30,0,0,109,110,3,26,13,0,110,15,1,0,0,0,111,112,5,19,0,0,112,
+  	113,5,2,0,0,113,114,3,26,13,0,114,115,5,3,0,0,115,117,3,10,5,0,116,118,
+  	3,18,9,0,117,116,1,0,0,0,117,118,1,0,0,0,118,17,1,0,0,0,119,122,5,20,
+  	0,0,120,123,3,16,8,0,121,123,3,10,5,0,122,120,1,0,0,0,122,121,1,0,0,0,
+  	123,19,1,0,0,0,124,125,5,21,0,0,125,126,5,2,0,0,126,127,3,26,13,0,127,
+  	128,5,3,0,0,128,129,3,10,5,0,129,21,1,0,0,0,130,131,5,16,0,0,131,132,
+  	3,42,21,0,132,135,5,31,0,0,133,134,5,15,0,0,134,136,3,26,13,0,135,133,
+  	1,0,0,0,135,136,1,0,0,0,136,23,1,0,0,0,137,138,5,17,0,0,138,139,5,31,
+  	0,0,139,140,5,15,0,0,140,141,3,26,13,0,141,25,1,0,0,0,142,143,6,13,-1,
+  	0,143,150,3,34,17,0,144,150,3,30,15,0,145,146,5,2,0,0,146,147,3,26,13,
+  	0,147,148,5,3,0,0,148,150,1,0,0,0,149,142,1,0,0,0,149,144,1,0,0,0,149,
+  	145,1,0,0,0,150,163,1,0,0,0,151,152,10,3,0,0,152,153,7,1,0,0,153,162,
+  	3,26,13,4,154,155,10,2,0,0,155,156,7,2,0,0,156,162,3,26,13,3,157,158,
+  	10,1,0,0,158,159,3,28,14,0,159,160,3,26,13,2,160,162,1,0,0,0,161,151,
+  	1,0,0,0,161,154,1,0,0,0,161,157,1,0,0,0,162,165,1,0,0,0,163,161,1,0,0,
+  	0,163,164,1,0,0,0,164,27,1,0,0,0,165,163,1,0,0,0,166,167,5,14,0,0,167,
+  	174,5,15,0,0,168,174,5,15,0,0,169,174,5,10,0,0,170,174,5,12,0,0,171,174,
+  	5,11,0,0,172,174,5,13,0,0,173,166,1,0,0,0,173,168,1,0,0,0,173,169,1,0,
+  	0,0,173,170,1,0,0,0,173,171,1,0,0,0,173,172,1,0,0,0,174,29,1,0,0,0,175,
+  	176,5,31,0,0,176,178,5,2,0,0,177,179,3,32,16,0,178,177,1,0,0,0,178,179,
+  	1,0,0,0,179,180,1,0,0,0,180,181,5,3,0,0,181,31,1,0,0,0,182,187,3,26,13,
+  	0,183,184,5,9,0,0,184,186,3,26,13,0,185,183,1,0,0,0,186,189,1,0,0,0,187,
+  	185,1,0,0,0,187,188,1,0,0,0,188,33,1,0,0,0,189,187,1,0,0,0,190,193,3,
+  	36,18,0,191,193,3,40,20,0,192,190,1,0,0,0,192,191,1,0,0,0,193,35,1,0,
+  	0,0,194,198,5,36,0,0,195,198,5,37,0,0,196,198,3,38,19,0,197,194,1,0,0,
+  	0,197,195,1,0,0,0,197,196,1,0,0,0,198,37,1,0,0,0,199,200,7,3,0,0,200,
+  	39,1,0,0,0,201,202,5,31,0,0,202,41,1,0,0,0,203,206,3,44,22,0,204,206,
+  	3,46,23,0,205,203,1,0,0,0,205,204,1,0,0,0,206,43,1,0,0,0,207,208,7,4,
+  	0,0,208,45,1,0,0,0,209,210,5,1,0,0,210,47,1,0,0,0,18,51,63,68,80,87,106,
+  	117,122,135,149,161,163,173,178,187,192,197,205
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -231,17 +239,17 @@ AluminumParser::ProgramContext* AluminumParser::program() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(45); 
+    setState(49); 
     _errHandler->sync(this);
     _la = _input->LA(1);
     do {
-      setState(44);
+      setState(48);
       function();
-      setState(47); 
+      setState(51); 
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while (_la == AluminumParser::DEFINE);
-    setState(49);
+    setState(53);
     match(AluminumParser::EOF);
    
   }
@@ -306,9 +314,9 @@ AluminumParser::FunctionContext* AluminumParser::function() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(51);
+    setState(55);
     function_header();
-    setState(52);
+    setState(56);
     block();
    
   }
@@ -398,33 +406,33 @@ AluminumParser::Function_headerContext* AluminumParser::function_header() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(54);
+    setState(58);
     match(AluminumParser::DEFINE);
-    setState(55);
-    match(AluminumParser::FUNCTION);
-    setState(56);
-    function_identifier();
-    setState(57);
-    match(AluminumParser::LPAREN);
     setState(59);
+    match(AluminumParser::FUNCTION);
+    setState(60);
+    function_identifier();
+    setState(61);
+    match(AluminumParser::LPAREN);
+    setState(63);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if ((((_la & ~ 0x3fULL) == 0) &&
       ((1ULL << _la) & 234881026) != 0)) {
-      setState(58);
+      setState(62);
       function_variables();
     }
-    setState(61);
+    setState(65);
     match(AluminumParser::RPAREN);
-    setState(64);
+    setState(68);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == AluminumParser::ARROW) {
-      setState(62);
+      setState(66);
       match(AluminumParser::ARROW);
-      setState(63);
+      setState(67);
       type();
     }
    
@@ -491,7 +499,7 @@ AluminumParser::Function_identifierContext* AluminumParser::function_identifier(
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(66);
+    setState(70);
     _la = _input->LA(1);
     if (!(_la == AluminumParser::MAIN
 
@@ -582,21 +590,21 @@ AluminumParser::Function_variablesContext* AluminumParser::function_variables() 
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(68);
+    setState(72);
     type();
-    setState(69);
+    setState(73);
     match(AluminumParser::IDENTIFIER);
-    setState(76);
+    setState(80);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AluminumParser::COMMA) {
-      setState(70);
+      setState(74);
       match(AluminumParser::COMMA);
-      setState(71);
+      setState(75);
       type();
-      setState(72);
+      setState(76);
       match(AluminumParser::IDENTIFIER);
-      setState(78);
+      setState(82);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -672,20 +680,20 @@ AluminumParser::BlockContext* AluminumParser::block() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(79);
-    match(AluminumParser::LCURL);
     setState(83);
+    match(AluminumParser::LCURL);
+    setState(87);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & 104961081348) != 0)) {
-      setState(80);
+      ((1ULL << _la) & 210187780100) != 0)) {
+      setState(84);
       statement();
-      setState(85);
+      setState(89);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(86);
+    setState(90);
     match(AluminumParser::RCURL);
    
   }
@@ -714,6 +722,10 @@ tree::TerminalNode* AluminumParser::StatementContext::EOL() {
 
 AluminumParser::Set_opContext* AluminumParser::StatementContext::set_op() {
   return getRuleContext<AluminumParser::Set_opContext>(0);
+}
+
+AluminumParser::Return_opContext* AluminumParser::StatementContext::return_op() {
+  return getRuleContext<AluminumParser::Return_opContext>(0);
 }
 
 AluminumParser::ExpressionContext* AluminumParser::StatementContext::expression() {
@@ -765,23 +777,32 @@ AluminumParser::StatementContext* AluminumParser::statement() {
     exitRule();
   });
   try {
-    setState(99);
+    setState(106);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AluminumParser::TAKE: {
         enterOuterAlt(_localctx, 1);
-        setState(88);
+        setState(92);
         declare_op();
-        setState(89);
+        setState(93);
         match(AluminumParser::EOL);
         break;
       }
 
       case AluminumParser::SET: {
         enterOuterAlt(_localctx, 2);
-        setState(91);
+        setState(95);
         set_op();
-        setState(92);
+        setState(96);
+        match(AluminumParser::EOL);
+        break;
+      }
+
+      case AluminumParser::RETURN: {
+        enterOuterAlt(_localctx, 3);
+        setState(98);
+        return_op();
+        setState(99);
         match(AluminumParser::EOL);
         break;
       }
@@ -792,24 +813,24 @@ AluminumParser::StatementContext* AluminumParser::statement() {
       case AluminumParser::IDENTIFIER:
       case AluminumParser::INT_LITERAL:
       case AluminumParser::FLOAT_LITERAL: {
-        enterOuterAlt(_localctx, 3);
-        setState(94);
+        enterOuterAlt(_localctx, 4);
+        setState(101);
         expression(0);
-        setState(95);
+        setState(102);
         match(AluminumParser::EOL);
         break;
       }
 
       case AluminumParser::IF: {
-        enterOuterAlt(_localctx, 4);
-        setState(97);
+        enterOuterAlt(_localctx, 5);
+        setState(104);
         if_block();
         break;
       }
 
       case AluminumParser::WHILE: {
-        enterOuterAlt(_localctx, 5);
-        setState(98);
+        enterOuterAlt(_localctx, 6);
+        setState(105);
         while_block();
         break;
       }
@@ -817,6 +838,73 @@ AluminumParser::StatementContext* AluminumParser::statement() {
     default:
       throw NoViableAltException(this);
     }
+   
+  }
+  catch (RecognitionException &e) {
+    _errHandler->reportError(this, e);
+    _localctx->exception = std::current_exception();
+    _errHandler->recover(this, _localctx->exception);
+  }
+
+  return _localctx;
+}
+
+//----------------- Return_opContext ------------------------------------------------------------------
+
+AluminumParser::Return_opContext::Return_opContext(ParserRuleContext *parent, size_t invokingState)
+  : ParserRuleContext(parent, invokingState) {
+}
+
+tree::TerminalNode* AluminumParser::Return_opContext::RETURN() {
+  return getToken(AluminumParser::RETURN, 0);
+}
+
+AluminumParser::ExpressionContext* AluminumParser::Return_opContext::expression() {
+  return getRuleContext<AluminumParser::ExpressionContext>(0);
+}
+
+
+size_t AluminumParser::Return_opContext::getRuleIndex() const {
+  return AluminumParser::RuleReturn_op;
+}
+
+void AluminumParser::Return_opContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AluminumListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterReturn_op(this);
+}
+
+void AluminumParser::Return_opContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AluminumListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitReturn_op(this);
+}
+
+
+std::any AluminumParser::Return_opContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<AluminumVisitor*>(visitor))
+    return parserVisitor->visitReturn_op(this);
+  else
+    return visitor->visitChildren(this);
+}
+
+AluminumParser::Return_opContext* AluminumParser::return_op() {
+  Return_opContext *_localctx = _tracker.createInstance<Return_opContext>(_ctx, getState());
+  enterRule(_localctx, 14, AluminumParser::RuleReturn_op);
+
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
+  auto onExit = finally([=] {
+#endif
+    exitRule();
+  });
+  try {
+    enterOuterAlt(_localctx, 1);
+    setState(108);
+    match(AluminumParser::RETURN);
+    setState(109);
+    expression(0);
    
   }
   catch (RecognitionException &e) {
@@ -885,7 +973,7 @@ std::any AluminumParser::If_blockContext::accept(tree::ParseTreeVisitor *visitor
 
 AluminumParser::If_blockContext* AluminumParser::if_block() {
   If_blockContext *_localctx = _tracker.createInstance<If_blockContext>(_ctx, getState());
-  enterRule(_localctx, 14, AluminumParser::RuleIf_block);
+  enterRule(_localctx, 16, AluminumParser::RuleIf_block);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -897,22 +985,22 @@ AluminumParser::If_blockContext* AluminumParser::if_block() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(101);
+    setState(111);
     match(AluminumParser::IF);
-    setState(102);
+    setState(112);
     match(AluminumParser::LPAREN);
-    setState(103);
+    setState(113);
     expression(0);
-    setState(104);
+    setState(114);
     match(AluminumParser::RPAREN);
-    setState(105);
+    setState(115);
     block();
-    setState(107);
+    setState(117);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == AluminumParser::ELSE) {
-      setState(106);
+      setState(116);
       else_block();
     }
    
@@ -971,7 +1059,7 @@ std::any AluminumParser::Else_blockContext::accept(tree::ParseTreeVisitor *visit
 
 AluminumParser::Else_blockContext* AluminumParser::else_block() {
   Else_blockContext *_localctx = _tracker.createInstance<Else_blockContext>(_ctx, getState());
-  enterRule(_localctx, 16, AluminumParser::RuleElse_block);
+  enterRule(_localctx, 18, AluminumParser::RuleElse_block);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -982,19 +1070,19 @@ AluminumParser::Else_blockContext* AluminumParser::else_block() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(109);
+    setState(119);
     match(AluminumParser::ELSE);
-    setState(112);
+    setState(122);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AluminumParser::IF: {
-        setState(110);
+        setState(120);
         if_block();
         break;
       }
 
       case AluminumParser::LCURL: {
-        setState(111);
+        setState(121);
         block();
         break;
       }
@@ -1066,7 +1154,7 @@ std::any AluminumParser::While_blockContext::accept(tree::ParseTreeVisitor *visi
 
 AluminumParser::While_blockContext* AluminumParser::while_block() {
   While_blockContext *_localctx = _tracker.createInstance<While_blockContext>(_ctx, getState());
-  enterRule(_localctx, 18, AluminumParser::RuleWhile_block);
+  enterRule(_localctx, 20, AluminumParser::RuleWhile_block);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1077,15 +1165,15 @@ AluminumParser::While_blockContext* AluminumParser::while_block() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(114);
+    setState(124);
     match(AluminumParser::WHILE);
-    setState(115);
+    setState(125);
     match(AluminumParser::LPAREN);
-    setState(116);
+    setState(126);
     expression(0);
-    setState(117);
+    setState(127);
     match(AluminumParser::RPAREN);
-    setState(118);
+    setState(128);
     block();
    
   }
@@ -1151,7 +1239,7 @@ std::any AluminumParser::Declare_opContext::accept(tree::ParseTreeVisitor *visit
 
 AluminumParser::Declare_opContext* AluminumParser::declare_op() {
   Declare_opContext *_localctx = _tracker.createInstance<Declare_opContext>(_ctx, getState());
-  enterRule(_localctx, 20, AluminumParser::RuleDeclare_op);
+  enterRule(_localctx, 22, AluminumParser::RuleDeclare_op);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1163,20 +1251,20 @@ AluminumParser::Declare_opContext* AluminumParser::declare_op() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(120);
+    setState(130);
     match(AluminumParser::TAKE);
-    setState(121);
+    setState(131);
     type();
-    setState(122);
+    setState(132);
     match(AluminumParser::IDENTIFIER);
-    setState(125);
+    setState(135);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == AluminumParser::EQUALS) {
-      setState(123);
+      setState(133);
       match(AluminumParser::EQUALS);
-      setState(124);
+      setState(134);
       expression(0);
     }
    
@@ -1239,7 +1327,7 @@ std::any AluminumParser::Set_opContext::accept(tree::ParseTreeVisitor *visitor) 
 
 AluminumParser::Set_opContext* AluminumParser::set_op() {
   Set_opContext *_localctx = _tracker.createInstance<Set_opContext>(_ctx, getState());
-  enterRule(_localctx, 22, AluminumParser::RuleSet_op);
+  enterRule(_localctx, 24, AluminumParser::RuleSet_op);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1250,13 +1338,13 @@ AluminumParser::Set_opContext* AluminumParser::set_op() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(127);
+    setState(137);
     match(AluminumParser::SET);
-    setState(128);
+    setState(138);
     match(AluminumParser::IDENTIFIER);
-    setState(129);
+    setState(139);
     match(AluminumParser::EQUALS);
-    setState(130);
+    setState(140);
     expression(0);
    
   }
@@ -1355,8 +1443,8 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
   AluminumParser::ExpressionContext *_localctx = _tracker.createInstance<ExpressionContext>(_ctx, parentState);
   AluminumParser::ExpressionContext *previousContext = _localctx;
   (void)previousContext; // Silence compiler, in case the context is not used by generated code.
-  size_t startState = 24;
-  enterRecursionRule(_localctx, 24, AluminumParser::RuleExpression, precedence);
+  size_t startState = 26;
+  enterRecursionRule(_localctx, 26, AluminumParser::RuleExpression, precedence);
 
     size_t _la = 0;
 
@@ -1370,27 +1458,27 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(139);
+    setState(149);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 9, _ctx)) {
     case 1: {
-      setState(133);
+      setState(143);
       value();
       break;
     }
 
     case 2: {
-      setState(134);
+      setState(144);
       function_call();
       break;
     }
 
     case 3: {
-      setState(135);
+      setState(145);
       match(AluminumParser::LPAREN);
-      setState(136);
+      setState(146);
       expression(0);
-      setState(137);
+      setState(147);
       match(AluminumParser::RPAREN);
       break;
     }
@@ -1399,7 +1487,7 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
       break;
     }
     _ctx->stop = _input->LT(-1);
-    setState(153);
+    setState(163);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 11, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -1407,16 +1495,16 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
         if (!_parseListeners.empty())
           triggerExitRuleEvent();
         previousContext = _localctx;
-        setState(151);
+        setState(161);
         _errHandler->sync(this);
         switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 10, _ctx)) {
         case 1: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
-          setState(141);
+          setState(151);
 
           if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
-          setState(142);
+          setState(152);
           _la = _input->LA(1);
           if (!(_la == AluminumParser::MUL
 
@@ -1427,7 +1515,7 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
             _errHandler->reportMatch(this);
             consume();
           }
-          setState(143);
+          setState(153);
           expression(4);
           break;
         }
@@ -1435,10 +1523,10 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
         case 2: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
-          setState(144);
+          setState(154);
 
           if (!(precpred(_ctx, 2))) throw FailedPredicateException(this, "precpred(_ctx, 2)");
-          setState(145);
+          setState(155);
           _la = _input->LA(1);
           if (!(_la == AluminumParser::ADD
 
@@ -1449,7 +1537,7 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
             _errHandler->reportMatch(this);
             consume();
           }
-          setState(146);
+          setState(156);
           expression(3);
           break;
         }
@@ -1457,12 +1545,12 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
         case 3: {
           _localctx = _tracker.createInstance<ExpressionContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleExpression);
-          setState(147);
+          setState(157);
 
           if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
-          setState(148);
+          setState(158);
           comp_op();
-          setState(149);
+          setState(159);
           expression(2);
           break;
         }
@@ -1471,7 +1559,7 @@ AluminumParser::ExpressionContext* AluminumParser::expression(int precedence) {
           break;
         } 
       }
-      setState(155);
+      setState(165);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 11, _ctx);
     }
@@ -1541,7 +1629,7 @@ std::any AluminumParser::Comp_opContext::accept(tree::ParseTreeVisitor *visitor)
 
 AluminumParser::Comp_opContext* AluminumParser::comp_op() {
   Comp_opContext *_localctx = _tracker.createInstance<Comp_opContext>(_ctx, getState());
-  enterRule(_localctx, 26, AluminumParser::RuleComp_op);
+  enterRule(_localctx, 28, AluminumParser::RuleComp_op);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1551,49 +1639,49 @@ AluminumParser::Comp_opContext* AluminumParser::comp_op() {
     exitRule();
   });
   try {
-    setState(163);
+    setState(173);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AluminumParser::NOT: {
         enterOuterAlt(_localctx, 1);
-        setState(156);
+        setState(166);
         match(AluminumParser::NOT);
-        setState(157);
+        setState(167);
         match(AluminumParser::EQUALS);
         break;
       }
 
       case AluminumParser::EQUALS: {
         enterOuterAlt(_localctx, 2);
-        setState(158);
+        setState(168);
         match(AluminumParser::EQUALS);
         break;
       }
 
       case AluminumParser::GREATEREQUAL: {
         enterOuterAlt(_localctx, 3);
-        setState(159);
+        setState(169);
         match(AluminumParser::GREATEREQUAL);
         break;
       }
 
       case AluminumParser::LESSEQUAL: {
         enterOuterAlt(_localctx, 4);
-        setState(160);
+        setState(170);
         match(AluminumParser::LESSEQUAL);
         break;
       }
 
       case AluminumParser::GREATER: {
         enterOuterAlt(_localctx, 5);
-        setState(161);
+        setState(171);
         match(AluminumParser::GREATER);
         break;
       }
 
       case AluminumParser::LESS: {
         enterOuterAlt(_localctx, 6);
-        setState(162);
+        setState(172);
         match(AluminumParser::LESS);
         break;
       }
@@ -1630,6 +1718,10 @@ tree::TerminalNode* AluminumParser::Function_callContext::RPAREN() {
   return getToken(AluminumParser::RPAREN, 0);
 }
 
+AluminumParser::Passed_argumentsContext* AluminumParser::Function_callContext::passed_arguments() {
+  return getRuleContext<AluminumParser::Passed_argumentsContext>(0);
+}
+
 
 size_t AluminumParser::Function_callContext::getRuleIndex() const {
   return AluminumParser::RuleFunction_call;
@@ -1657,7 +1749,8 @@ std::any AluminumParser::Function_callContext::accept(tree::ParseTreeVisitor *vi
 
 AluminumParser::Function_callContext* AluminumParser::function_call() {
   Function_callContext *_localctx = _tracker.createInstance<Function_callContext>(_ctx, getState());
-  enterRule(_localctx, 28, AluminumParser::RuleFunction_call);
+  enterRule(_localctx, 30, AluminumParser::RuleFunction_call);
+  size_t _la = 0;
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1668,12 +1761,107 @@ AluminumParser::Function_callContext* AluminumParser::function_call() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(165);
+    setState(175);
     match(AluminumParser::IDENTIFIER);
-    setState(166);
+    setState(176);
     match(AluminumParser::LPAREN);
-    setState(167);
+    setState(178);
+    _errHandler->sync(this);
+
+    _la = _input->LA(1);
+    if ((((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & 209111220228) != 0)) {
+      setState(177);
+      passed_arguments();
+    }
+    setState(180);
     match(AluminumParser::RPAREN);
+   
+  }
+  catch (RecognitionException &e) {
+    _errHandler->reportError(this, e);
+    _localctx->exception = std::current_exception();
+    _errHandler->recover(this, _localctx->exception);
+  }
+
+  return _localctx;
+}
+
+//----------------- Passed_argumentsContext ------------------------------------------------------------------
+
+AluminumParser::Passed_argumentsContext::Passed_argumentsContext(ParserRuleContext *parent, size_t invokingState)
+  : ParserRuleContext(parent, invokingState) {
+}
+
+std::vector<AluminumParser::ExpressionContext *> AluminumParser::Passed_argumentsContext::expression() {
+  return getRuleContexts<AluminumParser::ExpressionContext>();
+}
+
+AluminumParser::ExpressionContext* AluminumParser::Passed_argumentsContext::expression(size_t i) {
+  return getRuleContext<AluminumParser::ExpressionContext>(i);
+}
+
+std::vector<tree::TerminalNode *> AluminumParser::Passed_argumentsContext::COMMA() {
+  return getTokens(AluminumParser::COMMA);
+}
+
+tree::TerminalNode* AluminumParser::Passed_argumentsContext::COMMA(size_t i) {
+  return getToken(AluminumParser::COMMA, i);
+}
+
+
+size_t AluminumParser::Passed_argumentsContext::getRuleIndex() const {
+  return AluminumParser::RulePassed_arguments;
+}
+
+void AluminumParser::Passed_argumentsContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AluminumListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterPassed_arguments(this);
+}
+
+void AluminumParser::Passed_argumentsContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AluminumListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitPassed_arguments(this);
+}
+
+
+std::any AluminumParser::Passed_argumentsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<AluminumVisitor*>(visitor))
+    return parserVisitor->visitPassed_arguments(this);
+  else
+    return visitor->visitChildren(this);
+}
+
+AluminumParser::Passed_argumentsContext* AluminumParser::passed_arguments() {
+  Passed_argumentsContext *_localctx = _tracker.createInstance<Passed_argumentsContext>(_ctx, getState());
+  enterRule(_localctx, 32, AluminumParser::RulePassed_arguments);
+  size_t _la = 0;
+
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
+  auto onExit = finally([=] {
+#endif
+    exitRule();
+  });
+  try {
+    enterOuterAlt(_localctx, 1);
+    setState(182);
+    expression(0);
+    setState(187);
+    _errHandler->sync(this);
+    _la = _input->LA(1);
+    while (_la == AluminumParser::COMMA) {
+      setState(183);
+      match(AluminumParser::COMMA);
+      setState(184);
+      expression(0);
+      setState(189);
+      _errHandler->sync(this);
+      _la = _input->LA(1);
+    }
    
   }
   catch (RecognitionException &e) {
@@ -1726,7 +1914,7 @@ std::any AluminumParser::ValueContext::accept(tree::ParseTreeVisitor *visitor) {
 
 AluminumParser::ValueContext* AluminumParser::value() {
   ValueContext *_localctx = _tracker.createInstance<ValueContext>(_ctx, getState());
-  enterRule(_localctx, 30, AluminumParser::RuleValue);
+  enterRule(_localctx, 34, AluminumParser::RuleValue);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1736,7 +1924,7 @@ AluminumParser::ValueContext* AluminumParser::value() {
     exitRule();
   });
   try {
-    setState(171);
+    setState(192);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AluminumParser::TRUE:
@@ -1744,14 +1932,14 @@ AluminumParser::ValueContext* AluminumParser::value() {
       case AluminumParser::INT_LITERAL:
       case AluminumParser::FLOAT_LITERAL: {
         enterOuterAlt(_localctx, 1);
-        setState(169);
+        setState(190);
         literal_val();
         break;
       }
 
       case AluminumParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 2);
-        setState(170);
+        setState(191);
         var_val();
         break;
       }
@@ -1815,7 +2003,7 @@ std::any AluminumParser::Literal_valContext::accept(tree::ParseTreeVisitor *visi
 
 AluminumParser::Literal_valContext* AluminumParser::literal_val() {
   Literal_valContext *_localctx = _tracker.createInstance<Literal_valContext>(_ctx, getState());
-  enterRule(_localctx, 32, AluminumParser::RuleLiteral_val);
+  enterRule(_localctx, 36, AluminumParser::RuleLiteral_val);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1825,19 +2013,19 @@ AluminumParser::Literal_valContext* AluminumParser::literal_val() {
     exitRule();
   });
   try {
-    setState(176);
+    setState(197);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AluminumParser::INT_LITERAL: {
         enterOuterAlt(_localctx, 1);
-        setState(173);
+        setState(194);
         match(AluminumParser::INT_LITERAL);
         break;
       }
 
       case AluminumParser::FLOAT_LITERAL: {
         enterOuterAlt(_localctx, 2);
-        setState(174);
+        setState(195);
         match(AluminumParser::FLOAT_LITERAL);
         break;
       }
@@ -1845,7 +2033,7 @@ AluminumParser::Literal_valContext* AluminumParser::literal_val() {
       case AluminumParser::TRUE:
       case AluminumParser::FALSE: {
         enterOuterAlt(_localctx, 3);
-        setState(175);
+        setState(196);
         bool_literal();
         break;
       }
@@ -1905,7 +2093,7 @@ std::any AluminumParser::Bool_literalContext::accept(tree::ParseTreeVisitor *vis
 
 AluminumParser::Bool_literalContext* AluminumParser::bool_literal() {
   Bool_literalContext *_localctx = _tracker.createInstance<Bool_literalContext>(_ctx, getState());
-  enterRule(_localctx, 34, AluminumParser::RuleBool_literal);
+  enterRule(_localctx, 38, AluminumParser::RuleBool_literal);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1917,7 +2105,7 @@ AluminumParser::Bool_literalContext* AluminumParser::bool_literal() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(178);
+    setState(199);
     _la = _input->LA(1);
     if (!(_la == AluminumParser::TRUE
 
@@ -1976,7 +2164,7 @@ std::any AluminumParser::Var_valContext::accept(tree::ParseTreeVisitor *visitor)
 
 AluminumParser::Var_valContext* AluminumParser::var_val() {
   Var_valContext *_localctx = _tracker.createInstance<Var_valContext>(_ctx, getState());
-  enterRule(_localctx, 36, AluminumParser::RuleVar_val);
+  enterRule(_localctx, 40, AluminumParser::RuleVar_val);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1987,7 +2175,7 @@ AluminumParser::Var_valContext* AluminumParser::var_val() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(180);
+    setState(201);
     match(AluminumParser::IDENTIFIER);
    
   }
@@ -2041,7 +2229,7 @@ std::any AluminumParser::TypeContext::accept(tree::ParseTreeVisitor *visitor) {
 
 AluminumParser::TypeContext* AluminumParser::type() {
   TypeContext *_localctx = _tracker.createInstance<TypeContext>(_ctx, getState());
-  enterRule(_localctx, 38, AluminumParser::RuleType);
+  enterRule(_localctx, 42, AluminumParser::RuleType);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2051,21 +2239,21 @@ AluminumParser::TypeContext* AluminumParser::type() {
     exitRule();
   });
   try {
-    setState(184);
+    setState(205);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AluminumParser::INT:
       case AluminumParser::FLOAT:
       case AluminumParser::BOOL: {
         enterOuterAlt(_localctx, 1);
-        setState(182);
+        setState(203);
         default_type();
         break;
       }
 
       case AluminumParser::T__0: {
         enterOuterAlt(_localctx, 2);
-        setState(183);
+        setState(204);
         custom_type();
         break;
       }
@@ -2129,7 +2317,7 @@ std::any AluminumParser::Default_typeContext::accept(tree::ParseTreeVisitor *vis
 
 AluminumParser::Default_typeContext* AluminumParser::default_type() {
   Default_typeContext *_localctx = _tracker.createInstance<Default_typeContext>(_ctx, getState());
-  enterRule(_localctx, 40, AluminumParser::RuleDefault_type);
+  enterRule(_localctx, 44, AluminumParser::RuleDefault_type);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2141,7 +2329,7 @@ AluminumParser::Default_typeContext* AluminumParser::default_type() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(186);
+    setState(207);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
       ((1ULL << _la) & 234881024) != 0))) {
@@ -2195,7 +2383,7 @@ std::any AluminumParser::Custom_typeContext::accept(tree::ParseTreeVisitor *visi
 
 AluminumParser::Custom_typeContext* AluminumParser::custom_type() {
   Custom_typeContext *_localctx = _tracker.createInstance<Custom_typeContext>(_ctx, getState());
-  enterRule(_localctx, 42, AluminumParser::RuleCustom_type);
+  enterRule(_localctx, 46, AluminumParser::RuleCustom_type);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2206,7 +2394,7 @@ AluminumParser::Custom_typeContext* AluminumParser::custom_type() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(188);
+    setState(209);
     match(AluminumParser::T__0);
    
   }
@@ -2221,7 +2409,7 @@ AluminumParser::Custom_typeContext* AluminumParser::custom_type() {
 
 bool AluminumParser::sempred(RuleContext *context, size_t ruleIndex, size_t predicateIndex) {
   switch (ruleIndex) {
-    case 12: return expressionSempred(antlrcpp::downCast<ExpressionContext *>(context), predicateIndex);
+    case 13: return expressionSempred(antlrcpp::downCast<ExpressionContext *>(context), predicateIndex);
 
   default:
     break;

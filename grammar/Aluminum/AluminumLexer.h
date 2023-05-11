@@ -17,9 +17,9 @@ public:
     DOT = 8, COMMA = 9, GREATEREQUAL = 10, GREATER = 11, LESSEQUAL = 12, 
     LESS = 13, NOT = 14, EQUALS = 15, TAKE = 16, SET = 17, MAIN = 18, IF = 19, 
     ELSE = 20, WHILE = 21, DEFINE = 22, FUNCTION = 23, VARIABLE = 24, INT = 25, 
-    FLOAT = 26, BOOL = 27, TRUE = 28, FALSE = 29, IDENTIFIER = 30, MUL = 31, 
-    DIV = 32, ADD = 33, SUB = 34, INT_LITERAL = 35, FLOAT_LITERAL = 36, 
-    WS = 37
+    FLOAT = 26, BOOL = 27, TRUE = 28, FALSE = 29, RETURN = 30, IDENTIFIER = 31, 
+    MUL = 32, DIV = 33, ADD = 34, SUB = 35, INT_LITERAL = 36, FLOAT_LITERAL = 37, 
+    WS = 38
   };
 
   explicit AluminumLexer(antlr4::CharStream *input);

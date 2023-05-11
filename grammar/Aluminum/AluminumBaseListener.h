@@ -39,6 +39,9 @@ public:
   virtual void enterStatement(AluminumParser::StatementContext * /*ctx*/) override { }
   virtual void exitStatement(AluminumParser::StatementContext * /*ctx*/) override { }
 
+  virtual void enterReturn_op(AluminumParser::Return_opContext * /*ctx*/) override { }
+  virtual void exitReturn_op(AluminumParser::Return_opContext * /*ctx*/) override { }
+
   virtual void enterIf_block(AluminumParser::If_blockContext * /*ctx*/) override { }
   virtual void exitIf_block(AluminumParser::If_blockContext * /*ctx*/) override { }
 
@@ -62,6 +65,9 @@ public:
 
   virtual void enterFunction_call(AluminumParser::Function_callContext * /*ctx*/) override { }
   virtual void exitFunction_call(AluminumParser::Function_callContext * /*ctx*/) override { }
+
+  virtual void enterPassed_arguments(AluminumParser::Passed_argumentsContext * /*ctx*/) override { }
+  virtual void exitPassed_arguments(AluminumParser::Passed_argumentsContext * /*ctx*/) override { }
 
   virtual void enterValue(AluminumParser::ValueContext * /*ctx*/) override { }
   virtual void exitValue(AluminumParser::ValueContext * /*ctx*/) override { }

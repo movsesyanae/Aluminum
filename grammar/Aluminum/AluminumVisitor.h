@@ -34,6 +34,8 @@ public:
 
     virtual std::any visitStatement(AluminumParser::StatementContext *context) = 0;
 
+    virtual std::any visitReturn_op(AluminumParser::Return_opContext *context) = 0;
+
     virtual std::any visitIf_block(AluminumParser::If_blockContext *context) = 0;
 
     virtual std::any visitElse_block(AluminumParser::Else_blockContext *context) = 0;
@@ -49,6 +51,8 @@ public:
     virtual std::any visitComp_op(AluminumParser::Comp_opContext *context) = 0;
 
     virtual std::any visitFunction_call(AluminumParser::Function_callContext *context) = 0;
+
+    virtual std::any visitPassed_arguments(AluminumParser::Passed_argumentsContext *context) = 0;
 
     virtual std::any visitValue(AluminumParser::ValueContext *context) = 0;
 

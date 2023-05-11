@@ -1,4 +1,9 @@
-def func main() {
+def func times_two(int x) -> int {
+    print_int(x);
+    return x * 2;
+}
+
+def func main() -> int {
 
     take int x;
 
@@ -18,4 +23,8 @@ def func main() {
 
     take int z;
     set z = 3 * x  + 4 / 2 + x * 2;
+    set x = 5;
+    take int ret_val = times_two(x);
+    print_int(ret_val);
+    return 1;
 }

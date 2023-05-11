@@ -5,7 +5,7 @@
 #include "ANTLRInputStream.h"
 #include "AluminumLexer.h"
 #include "AluminumParser.h"
-#include "CustomAluminumVisitor.cpp"
+#include "Aluminum_IR_Code_Generator.cpp"
 #include "AluminumBaseVisitor.h"
 
 int main() {
@@ -22,7 +22,7 @@ int main() {
 
     auto tree = parser.program();
     std::cout << tree->toString();
-    Aluminum::CustomAluminumVisitor* vis = new Aluminum::CustomAluminumVisitor();
+    Aluminum::Aluminum_IR_Code_Generator* vis = new Aluminum::Aluminum_IR_Code_Generator();
     vis->visitProgram(tree);
     Aluminum::AluminumBaseVisitor base_vis;
     base_vis.visit(tree);

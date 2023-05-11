@@ -15,10 +15,12 @@ block: LCURL statement* RCURL;
 statement
     : declare_op EOL
     | set_op EOL
+    | return_op EOL
     | expression EOL
     | if_block
     | while_block
     ;
+return_op: RETURN expression;
 if_block: IF LPAREN expression RPAREN block else_block?;
 else_block: ELSE (if_block | block);
 while_block: WHILE LPAREN expression RPAREN block;
@@ -40,8 +42,8 @@ expression
 //    | (MUL | DIV)
 //    ;
 comp_op: (NOT EQUALS) | EQUALS | GREATEREQUAL | LESSEQUAL | GREATER | LESS;
-function_call: IDENTIFIER LPAREN RPAREN;
-
+function_call: IDENTIFIER LPAREN passed_arguments? RPAREN;
+passed_arguments: expression (COMMA expression)*;
 value
     : literal_val
     | var_val
@@ -93,6 +95,7 @@ FLOAT: 'float';
 BOOL: 'bool';
 TRUE: 'true';
 FALSE: 'false';
+RETURN: 'return';
 
 
 

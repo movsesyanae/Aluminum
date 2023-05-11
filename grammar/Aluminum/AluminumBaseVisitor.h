@@ -45,6 +45,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitReturn_op(AluminumParser::Return_opContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitIf_block(AluminumParser::If_blockContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -74,6 +78,10 @@ public:
   }
 
   virtual std::any visitFunction_call(AluminumParser::Function_callContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitPassed_arguments(AluminumParser::Passed_argumentsContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -37,6 +37,9 @@ public:
   virtual void enterStatement(AluminumParser::StatementContext *ctx) = 0;
   virtual void exitStatement(AluminumParser::StatementContext *ctx) = 0;
 
+  virtual void enterReturn_op(AluminumParser::Return_opContext *ctx) = 0;
+  virtual void exitReturn_op(AluminumParser::Return_opContext *ctx) = 0;
+
   virtual void enterIf_block(AluminumParser::If_blockContext *ctx) = 0;
   virtual void exitIf_block(AluminumParser::If_blockContext *ctx) = 0;
 
@@ -60,6 +63,9 @@ public:
 
   virtual void enterFunction_call(AluminumParser::Function_callContext *ctx) = 0;
   virtual void exitFunction_call(AluminumParser::Function_callContext *ctx) = 0;
+
+  virtual void enterPassed_arguments(AluminumParser::Passed_argumentsContext *ctx) = 0;
+  virtual void exitPassed_arguments(AluminumParser::Passed_argumentsContext *ctx) = 0;
 
   virtual void enterValue(AluminumParser::ValueContext *ctx) = 0;
   virtual void exitValue(AluminumParser::ValueContext *ctx) = 0;

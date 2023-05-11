@@ -30,7 +30,7 @@ llvm_map_components_to_libnames(llvm_libs support core irreader)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
-add_executable(aluminum src/main.cpp ${antlr4-generated-files} src/CustomAluminumVisitor.cpp)
+add_executable(aluminum src/main.cpp ${antlr4-generated-files} src/Aluminum_IR_Code_Generator.cpp)
 
 
 target_include_directories(aluminum PUBLIC ${antlr4-generated-files-dir} ${antlr4-include})

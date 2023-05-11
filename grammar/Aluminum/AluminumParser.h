@@ -17,18 +17,18 @@ public:
     DOT = 8, COMMA = 9, GREATEREQUAL = 10, GREATER = 11, LESSEQUAL = 12, 
     LESS = 13, NOT = 14, EQUALS = 15, TAKE = 16, SET = 17, MAIN = 18, IF = 19, 
     ELSE = 20, WHILE = 21, DEFINE = 22, FUNCTION = 23, VARIABLE = 24, INT = 25, 
-    FLOAT = 26, BOOL = 27, TRUE = 28, FALSE = 29, IDENTIFIER = 30, MUL = 31, 
-    DIV = 32, ADD = 33, SUB = 34, INT_LITERAL = 35, FLOAT_LITERAL = 36, 
-    WS = 37
+    FLOAT = 26, BOOL = 27, TRUE = 28, FALSE = 29, RETURN = 30, IDENTIFIER = 31, 
+    MUL = 32, DIV = 33, ADD = 34, SUB = 35, INT_LITERAL = 36, FLOAT_LITERAL = 37, 
+    WS = 38
   };
 
   enum {
     RuleProgram = 0, RuleFunction = 1, RuleFunction_header = 2, RuleFunction_identifier = 3, 
-    RuleFunction_variables = 4, RuleBlock = 5, RuleStatement = 6, RuleIf_block = 7, 
-    RuleElse_block = 8, RuleWhile_block = 9, RuleDeclare_op = 10, RuleSet_op = 11, 
-    RuleExpression = 12, RuleComp_op = 13, RuleFunction_call = 14, RuleValue = 15, 
-    RuleLiteral_val = 16, RuleBool_literal = 17, RuleVar_val = 18, RuleType = 19, 
-    RuleDefault_type = 20, RuleCustom_type = 21
+    RuleFunction_variables = 4, RuleBlock = 5, RuleStatement = 6, RuleReturn_op = 7, 
+    RuleIf_block = 8, RuleElse_block = 9, RuleWhile_block = 10, RuleDeclare_op = 11, 
+    RuleSet_op = 12, RuleExpression = 13, RuleComp_op = 14, RuleFunction_call = 15, 
+    RulePassed_arguments = 16, RuleValue = 17, RuleLiteral_val = 18, RuleBool_literal = 19, 
+    RuleVar_val = 20, RuleType = 21, RuleDefault_type = 22, RuleCustom_type = 23
   };
 
   explicit AluminumParser(antlr4::TokenStream *input);
@@ -55,6 +55,7 @@ public:
   class Function_variablesContext;
   class BlockContext;
   class StatementContext;
+  class Return_opContext;
   class If_blockContext;
   class Else_blockContext;
   class While_blockContext;
@@ -63,6 +64,7 @@ public:
   class ExpressionContext;
   class Comp_opContext;
   class Function_callContext;
+  class Passed_argumentsContext;
   class ValueContext;
   class Literal_valContext;
   class Bool_literalContext;
@@ -187,6 +189,7 @@ public:
     Declare_opContext *declare_op();
     antlr4::tree::TerminalNode *EOL();
     Set_opContext *set_op();
+    Return_opContext *return_op();
     ExpressionContext *expression();
     If_blockContext *if_block();
     While_blockContext *while_block();
@@ -199,6 +202,22 @@ public:
   };
 
   StatementContext* statement();
+
+  class  Return_opContext : public antlr4::ParserRuleContext {
+  public:
+    Return_opContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *RETURN();
+    ExpressionContext *expression();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Return_opContext* return_op();
 
   class  If_blockContext : public antlr4::ParserRuleContext {
   public:
@@ -345,6 +364,7 @@ public:
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *LPAREN();
     antlr4::tree::TerminalNode *RPAREN();
+    Passed_argumentsContext *passed_arguments();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -354,6 +374,24 @@ public:
   };
 
   Function_callContext* function_call();
+
+  class  Passed_argumentsContext : public antlr4::ParserRuleContext {
+  public:
+    Passed_argumentsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COMMA();
+    antlr4::tree::TerminalNode* COMMA(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Passed_argumentsContext* passed_arguments();
 
   class  ValueContext : public antlr4::ParserRuleContext {
   public:

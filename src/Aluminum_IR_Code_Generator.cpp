@@ -25,12 +25,14 @@
 #include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils.h"
 #include "llvm/Support/raw_os_ostream.h"
+#include "llvm/IR/Attributes.h"
+
 
 #define INT_BITS 32
 
 using namespace llvm;
 namespace Aluminum {
-    class CustomAluminumVisitor : public Aluminum::AluminumVisitor {
+    class Aluminum_IR_Code_Generator : public Aluminum::AluminumVisitor {
 
     private:
         enum arithmetic_operations {add, sub, mul, div};
@@ -38,6 +40,8 @@ namespace Aluminum {
         std::unique_ptr<IRBuilder<>> Builder;
         std::unique_ptr<Module> TheModule;
         std::map<std::string, AllocaInst*> NamedValues;
+        Function* current_function;
+        Value* int_print_global_string;
 //        static std::map<std::string, std::unique_ptr<PrototypeAST>> FunctionProtos;
 
         /// CreateEntryBlockAlloca - Create an alloca instruction in the entry block of
@@ -61,7 +65,7 @@ namespace Aluminum {
         }
 
     public:
-        CustomAluminumVisitor() {
+        Aluminum_IR_Code_Generator() {
 //            InitializeNativeTarget();
 //            InitializeNativeTargetAsmPrinter();
 //            InitializeNativeTargetAsmParser();
@@ -71,11 +75,22 @@ namespace Aluminum {
             TheModule = std::make_unique<Module>("my compiler", *TheContext);
             Builder = std::make_unique<IRBuilder<>>(*TheContext);
 
+
+
         }
         std::any visitProgram(Aluminum::AluminumParser::ProgramContext *context) override {
             std::cout << "in program" << std::endl;
             auto functions = context->function();
             std::cout << "num functions: " << functions.size() << std::endl;
+
+            // here I'll set up the print_int function which allows users to print integer values
+//            FunctionType* func_type = FunctionType::get(IntegerType::getInt32Ty(*TheContext), PointerType::get(Type::getInt8Ty(*TheContext), 0));
+//            Function* func = Function::Create(func_type, Function::ExternalLinkage, "printf", TheModule.get());
+//            FunctionType::get
+            PointerType* ptr_type =  PointerType::get(Type::getInt8Ty(*TheContext), 0);
+            FunctionType* print_type = FunctionType::get(IntegerType::getInt32Ty(*TheContext), true);
+            TheModule->getOrInsertFunction("printf", print_type);
+
             for(auto function: functions) {
                 std::cout << "I see " << function->function_header()->function_identifier()->getText();
                 visitFunction(function);
@@ -91,13 +106,16 @@ namespace Aluminum {
         }
 
         std::any visitFunction(Aluminum::AluminumParser::FunctionContext *context) override {
+            std::cout << "in visit function\n";
             std::any temp_header = visitFunction_header(context->function_header());
             if(!temp_header.has_value()) {
                 // somthing went wrong with the header
                 return LogError("Error parsing function header");
             }
+            std::cout << "finished visitfunctionheader\n";
             // now we want to set up the variables and generate the function body
             Function* func = std::any_cast<Function*>(temp_header);
+            current_function = func;
             // LLVM basic block to inject code into
             BasicBlock* block  = BasicBlock::Create(*TheContext, "entry", func);
             Builder->SetInsertPoint(block);
@@ -106,7 +124,7 @@ namespace Aluminum {
             NamedValues.clear();
             for(auto &arg: func->args()) {
                 // create allocation for variable
-                AllocaInst* var = CreateEntryBlockAlloca(func, arg.getName(), Type::getInt32Ty(*TheContext));
+                AllocaInst* var = CreateEntryBlockAlloca(func, arg.getName(), arg.getType());
 
                 //store the value
                 Builder->CreateStore(&arg, var);
@@ -115,7 +133,11 @@ namespace Aluminum {
                 NamedValues[std::string(arg.getName())] = var;
             }
 
-            return visitBlock(context->block());
+            std::any x = visitBlock(context->block());
+            if(func->getReturnType() == Type::getVoidTy(*TheContext)) {
+                Builder->CreateRet(nullptr);
+            }
+            return x;
         }
 
 
@@ -136,18 +158,46 @@ namespace Aluminum {
             std::vector<Type*> func_arg_types;
             if(context->function_variables()) {
                 for(auto var: context->function_variables()->type()) {
-                    func_arg_types.push_back(Type::getInt32Ty(*TheContext));
+
+                    if(var->default_type()) {
+                        if(var->default_type()->INT()) {
+                            func_arg_types.push_back(Type::getInt32Ty(*TheContext));
+                        } else if (var->default_type()->FLOAT()) {
+                            func_arg_types.push_back(Type::getDoubleTy(*TheContext));
+                        } else if (var->default_type()->BOOL()) {
+                            func_arg_types.push_back(Type::getInt1Ty(*TheContext));
+                        }
+                    }
                 }
             }
+            std::cout << "definied arguemtn variable types\n";
+            std::cout << "types vector has length " << func_arg_types.size() << std::endl;
+
             // define the functions return type
-            Type* func_return_type = Type::getInt32Ty(*TheContext);
+            Type* func_return_type;
+            if(context->type()) {
+                if(context->type()->default_type()) {
+                    if(context->type()->default_type()->INT()) {
+                        func_return_type = Type::getInt32Ty(*TheContext);
+                    } else if(context->type()->default_type()->FLOAT()) {
+                        func_return_type = Type::getDoubleTy(*TheContext);
+                    } else if(context->type()->default_type()->BOOL()) {
+                        func_return_type = Type::getInt1Ty(*TheContext);
+                    }
+                }
+            } else {
+                func_return_type = Type::getVoidTy(*TheContext);
+            }
+            std::cout << "defined return type\n" << std::endl;
 
             // specifying to LLVM this function type
             FunctionType* func_type = FunctionType::get(func_return_type, func_arg_types, false);
+            std::cout << "specified func type to llvm\n";
 
             // telling LLVM to create this function
             Function* func = Function::Create(func_type, Function::ExternalLinkage, func_id, TheModule.get());
 
+            std::cout << "about to define arguement variable names\n";
             //assigning the names for all the arguments in the function
             if(context->function_variables()) {
                 int i = 0;
@@ -235,6 +285,7 @@ namespace Aluminum {
             if(context->else_block()) {
                 visitElse_block(context->else_block());
             }
+            Builder->CreateBr(MergeBB);
 //            std::any temp_else = visitElse_block(context->else_block());
 //            Value *ElseV = std::any_cast<Value*>(temp_else);
 //            Value *ElseV = nullptr;
@@ -276,10 +327,16 @@ namespace Aluminum {
                     return LogError("trying to set variable that with different type in decleration");
                 }
             } else {
-                var_val = ConstantInt::get(*TheContext, APInt(32,0, true));
+                if(expected_type == Type::getInt32Ty(*TheContext)) {
+                    var_val = ConstantInt::get(*TheContext, APInt(32,0, true));
+                } else if(expected_type == Type::getDoubleTy(*TheContext)) {
+                    ConstantFP::get(Type::getDoubleTy(*TheContext), 0.0);
+                } else if (expected_type == Type::getInt1Ty(*TheContext)) {
+                    ConstantInt::get(*TheContext, APInt(1, 0, false));
+                }
             }
 
-            AllocaInst* var_alloca = Builder->CreateAlloca(Type::getInt32Ty(*TheContext), nullptr, var_name);
+            AllocaInst* var_alloca = Builder->CreateAlloca(expected_type, nullptr, var_name);
             Builder->CreateStore(var_val, var_alloca);
             NamedValues[var_name] = var_alloca;
             std::cout << "created new var allocation (declaration)\n";
@@ -479,17 +536,62 @@ namespace Aluminum {
             return ret_val;
         }
 
+
         std::any visitFunction_call(Aluminum::AluminumParser::Function_callContext *context) override {
             std::string func_name = context->IDENTIFIER()->getText();
+            if(func_name == "print_int") {
+                Function* print_func = TheModule->getFunction("printf");
+                std::vector<Value*> args;
+                if(!int_print_global_string) {
+                    int_print_global_string = Builder->CreateGlobalString("%d\n", "int_print_str");
+                }
+                args.push_back(int_print_global_string);
+                if(context->passed_arguments()) {
+                    std::any temp_arg = visitExpression(context->passed_arguments()->expression(0));
+                    if(!temp_arg.has_value()) {
+                        return LogError("Couldn't evaluate expression in print_int call");
+                    }
+                    Value* arg = std::any_cast<Value*>(temp_arg);
+                    if(arg->getType() != Type::getInt32Ty(*TheContext)) {
+                        return LogError("print_int only takes int values");
+                    }
+                    args.push_back(arg);
+                }
+//                Value* ret_val = Builder->CreateCall(print_func, args, "printfCall");
+
+                Value* ret_val = Builder->CreateCall(print_func, args);
+                return ret_val;
+            }
             Function* func = getFunction(func_name);
             if(!func) {
                 return LogError("Tried calling function which hasn't been declared");
             }
 
-//            if(context.)
             std::vector<Value*> func_args;
+            if(context->passed_arguments()) {
+                int i = 0;
+                for(auto arg: context->passed_arguments()->expression()) {
+                    std::any temp_arg_val = visitExpression(arg);
+                    if(!temp_arg_val.has_value()) {
+                        return LogError("Unable to evaluate expression in function call");
+                    }
+                    Type* expected_type = func->getArg(i++)->getType();
+                    Value* arg_val = std::any_cast<Value*>(temp_arg_val);
+                    if(arg_val->getType() != expected_type) {
+                        return LogError("Argument in function call does not match expected type");
+                    }
+                    func_args.push_back(arg_val);
+                }
+            }
             Value* ret_val = Builder->CreateCall(func, func_args, "calltmp");
-            return visitChildren(context);
+
+            std::any x = ret_val;
+            std::cout << "function call returns value type: " << ret_val->getType()->isVoidTy() << std::endl;
+            return ret_val;
+        }
+
+        std::any visitPassed_arguments(AluminumParser::Passed_argumentsContext *context) override {
+            return std::any();
         }
 
         std::any visitValue(Aluminum::AluminumParser::ValueContext *context) override {
@@ -564,6 +666,19 @@ namespace Aluminum {
                 val = ConstantInt::get(*TheContext, APInt(1, 0, false));
             }
             return val;
+        }
+
+        std::any visitReturn_op(AluminumParser::Return_opContext *context) override {
+            std::any temp_val = visitExpression(context->expression());
+            if(!temp_val.has_value()) {
+                return LogError("Return value could not be evaluated");
+            }
+            Value* return_val = std::any_cast<Value*>(temp_val);
+            if(return_val->getType() != current_function->getReturnType()) {
+                return LogError("Trying to return incorrect type");
+            }
+            Builder->CreateRet(return_val);
+            return return_val;
         }
 
     protected:
