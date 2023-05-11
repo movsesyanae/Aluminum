@@ -8,35 +8,21 @@
 #include "Aluminum_IR_Code_Generator.cpp"
 #include "AluminumBaseVisitor.h"
 
-int main() {
+int main(int argc, char** argv) {
     std::ifstream stream;
-    stream.open("../sample_code/hello_world.al");
+    std::string al_file = argv[1];
+    stream.open(al_file);
 
-    if(stream.is_open()) std::cout << "is open" << std::endl;
+
+    if(!stream.is_open()) return 1;
     antlr4::ANTLRInputStream input(stream);
-    std::cout << input.toString() << std::endl;
-//
     Aluminum::AluminumLexer lexer(&input);
     antlr4::CommonTokenStream tokens(&lexer);
     Aluminum::AluminumParser parser(&tokens);
 
     auto tree = parser.program();
-    std::cout << tree->toString();
-    Aluminum::Aluminum_IR_Code_Generator* vis = new Aluminum::Aluminum_IR_Code_Generator();
+    std::string out_file = "al_code_gen.ll";
+    Aluminum::Aluminum_IR_Code_Generator* vis = new Aluminum::Aluminum_IR_Code_Generator(out_file);
     vis->visitProgram(tree);
-    Aluminum::AluminumBaseVisitor base_vis;
-    base_vis.visit(tree);
-    antlr4::tree::ParseTree* parseTree = parser.function();
-    std::cout << parseTree->toStringTree(true);
-
-
-    std::cout << "Hello, World!" << std::endl;
-//    for(antlr4::Token* tok: tokens.getTokens()) {
-//        std::cout << "1";
-//        std::cout << tok->toString();
-//    }
-
-//    antlr4::Token* tok = parser.getCurrentToken();
-//    std::cout << tok->toString();
     return 0;
 }

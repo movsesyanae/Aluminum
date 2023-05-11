@@ -42,6 +42,7 @@ namespace Aluminum {
         std::map<std::string, AllocaInst*> NamedValues;
         Function* current_function;
         Value* int_print_global_string;
+        std::string out_file_name;
 //        static std::map<std::string, std::unique_ptr<PrototypeAST>> FunctionProtos;
 
         /// CreateEntryBlockAlloca - Create an alloca instruction in the entry block of
@@ -65,7 +66,7 @@ namespace Aluminum {
         }
 
     public:
-        Aluminum_IR_Code_Generator() {
+        Aluminum_IR_Code_Generator(std::string& out_file_name) {
 //            InitializeNativeTarget();
 //            InitializeNativeTargetAsmPrinter();
 //            InitializeNativeTargetAsmParser();
@@ -75,13 +76,14 @@ namespace Aluminum {
             TheModule = std::make_unique<Module>("my compiler", *TheContext);
             Builder = std::make_unique<IRBuilder<>>(*TheContext);
 
+            this->out_file_name = out_file_name;
 
 
         }
         std::any visitProgram(Aluminum::AluminumParser::ProgramContext *context) override {
-            std::cout << "in program" << std::endl;
+            // std::cout << "in program" << std::endl;
             auto functions = context->function();
-            std::cout << "num functions: " << functions.size() << std::endl;
+            // std::cout << "num functions: " << functions.size() << std::endl;
 
             // here I'll set up the print_int function which allows users to print integer values
 //            FunctionType* func_type = FunctionType::get(IntegerType::getInt32Ty(*TheContext), PointerType::get(Type::getInt8Ty(*TheContext), 0));
@@ -92,11 +94,11 @@ namespace Aluminum {
             TheModule->getOrInsertFunction("printf", print_type);
 
             for(auto function: functions) {
-                std::cout << "I see " << function->function_header()->function_identifier()->getText();
+                // std::cout << "I see " << function->function_header()->function_identifier()->getText();
                 visitFunction(function);
             }
 //            Builder.
-            std::ofstream out("test.ll");
+            std::ofstream out(out_file_name);
 //            out << "should print" << std::endl;
             raw_os_ostream out_2(out);
             TheModule->print(out_2, nullptr);
@@ -106,13 +108,13 @@ namespace Aluminum {
         }
 
         std::any visitFunction(Aluminum::AluminumParser::FunctionContext *context) override {
-            std::cout << "in visit function\n";
+            // std::cout << "in visit function\n";
             std::any temp_header = visitFunction_header(context->function_header());
             if(!temp_header.has_value()) {
                 // somthing went wrong with the header
                 return LogError("Error parsing function header");
             }
-            std::cout << "finished visitfunctionheader\n";
+            // std::cout << "finished visitfunctionheader\n";
             // now we want to set up the variables and generate the function body
             Function* func = std::any_cast<Function*>(temp_header);
             current_function = func;
@@ -149,10 +151,10 @@ namespace Aluminum {
             std::any temp_id = visitFunction_identifier(context->function_identifier());
             if(!temp_id.has_value() ) {
                 // error parsing function identifier
-                std::cout << "error getting function identifier\n";
+                // std::cout << "error getting function identifier\n";
             }
             std::string func_id = std::any_cast<std::string>(temp_id);
-            std::cout << "creating a function with name: " << func_id << std::endl;
+            // std::cout << "creating a function with name: " << func_id << std::endl;
 
             // defining the types of each argument in the function
             std::vector<Type*> func_arg_types;
@@ -170,8 +172,8 @@ namespace Aluminum {
                     }
                 }
             }
-            std::cout << "definied arguemtn variable types\n";
-            std::cout << "types vector has length " << func_arg_types.size() << std::endl;
+            // std::cout << "definied arguemtn variable types\n";
+            // std::cout << "types vector has length " << func_arg_types.size() << std::endl;
 
             // define the functions return type
             Type* func_return_type;
@@ -188,16 +190,16 @@ namespace Aluminum {
             } else {
                 func_return_type = Type::getVoidTy(*TheContext);
             }
-            std::cout << "defined return type\n" << std::endl;
+            // std::cout << "defined return type\n" << std::endl;
 
             // specifying to LLVM this function type
             FunctionType* func_type = FunctionType::get(func_return_type, func_arg_types, false);
-            std::cout << "specified func type to llvm\n";
+            // std::cout << "specified func type to llvm\n";
 
             // telling LLVM to create this function
             Function* func = Function::Create(func_type, Function::ExternalLinkage, func_id, TheModule.get());
 
-            std::cout << "about to define arguement variable names\n";
+            // std::cout << "about to define arguement variable names\n";
             //assigning the names for all the arguments in the function
             if(context->function_variables()) {
                 int i = 0;
@@ -238,7 +240,7 @@ namespace Aluminum {
 
         std::any visitStatement(Aluminum::AluminumParser::StatementContext *context) override {
             std::any v = visitChildren(context);
-            std::cout << "statrement has value? " << v.has_value()<< ": " << v.type().name() << std::endl;
+            // std::cout << "statrement has value? " << v.has_value()<< ": " << v.type().name() << std::endl;
             return v;
         }
 
@@ -273,8 +275,8 @@ namespace Aluminum {
             visitBlock(context->block());
 //            std::any temp_then = visitStatement(context->block()->statement()[0]);
 //            if(!temp_then.has_value()) {
-//                std::cout << context->block()->statement()[0]->getText() << std::endl;
-//                std::cout << "couldn't evaluate block inside if but continuing?" << std::endl;
+//                // std::cout << context->block()->statement()[0]->getText() << std::endl;
+//                // std::cout << "couldn't evaluate block inside if but continuing?" << std::endl;
 //                return LogError("Couldn't evaluate block inside if");
 //            }
             Builder->CreateBr(MergeBB);
@@ -339,12 +341,12 @@ namespace Aluminum {
             AllocaInst* var_alloca = Builder->CreateAlloca(expected_type, nullptr, var_name);
             Builder->CreateStore(var_val, var_alloca);
             NamedValues[var_name] = var_alloca;
-            std::cout << "created new var allocation (declaration)\n";
+            // std::cout << "created new var allocation (declaration)\n";
             return var_val;
         }
 
         std::any visitSet_op(Aluminum::AluminumParser::Set_opContext *context) override {
-            std::cout << "in set operation\n";
+            // std::cout << "in set operation\n";
             std::string var_name = context->IDENTIFIER()->getText();
 
             std::any temp = visitExpression(context->expression());
@@ -360,15 +362,15 @@ namespace Aluminum {
                 return LogError("trying to set variable that with different type");
             }
             Builder->CreateStore(var_val, var_alloca);
-            std::cout << "successfully completed set operation\n";
-            std::cout << "var name is " << var_name << " var val name is " << var_val->getName().str() << std::endl;
+            // std::cout << "successfully completed set operation\n";
+            // std::cout << "var name is " << var_name << " var val name is " << var_val->getName().str() << std::endl;
             std::any x = var_val;
-            std::cout << "return from set has value? " << x.has_value() << std::endl;
+            // std::cout << "return from set has value? " << x.has_value() << std::endl;
             return x;
         }
 
         std::any visitExpression(Aluminum::AluminumParser::ExpressionContext *context) override {
-            std::cout << "in expression" << std::endl;
+            // std::cout << "in expression" << std::endl;
             if(context->value()) {
                 return visitValue(context->value());
             } else if( context->LPAREN()) {
@@ -394,10 +396,10 @@ namespace Aluminum {
             std::any temp_l = visitExpression(context->expression(0));
             std::any temp_r = visitExpression(context->expression(1));
             if(temp_l.has_value()) {
-                std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
+                // std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
             }
             if(temp_r.has_value()) {
-                std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
+                // std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
             }
             if(!temp_l.has_value() || !temp_r.has_value()) {
                 // error happened
@@ -500,10 +502,10 @@ namespace Aluminum {
             std::any temp_l = visitExpression(context->expression(0));
             std::any temp_r = visitExpression(context->expression(1));
             if(temp_l.has_value()) {
-                std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
+                // std::cout << "Expression l type is " << temp_l.type().name() << std::endl;
             }
             if(temp_r.has_value()) {
-                std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
+                // std::cout << "Expression r type is " << temp_r.type().name() << std::endl;
             }
             if(!temp_l.has_value() || !temp_r.has_value()) {
                 // error happened
@@ -586,7 +588,7 @@ namespace Aluminum {
             Value* ret_val = Builder->CreateCall(func, func_args, "calltmp");
 
             std::any x = ret_val;
-            std::cout << "function call returns value type: " << ret_val->getType()->isVoidTy() << std::endl;
+            // std::cout << "function call returns value type: " << ret_val->getType()->isVoidTy() << std::endl;
             return ret_val;
         }
 
@@ -606,10 +608,10 @@ namespace Aluminum {
 
             Value* return_val;
             if(context->INT_LITERAL()) {
-                std::cout << "returning int literal: " << context->INT_LITERAL()->getText() << std::endl;
+                // std::cout << "returning int literal: " << context->INT_LITERAL()->getText() << std::endl;
                 return_val = ConstantInt::get(*TheContext, APInt(INT_BITS, context->INT_LITERAL()->getText(), 10));
             } else if(context->FLOAT_LITERAL()) {
-                std::cout << "returning float literal: " << context->FLOAT_LITERAL()->getText() << std::endl;
+                // std::cout << "returning float literal: " << context->FLOAT_LITERAL()->getText() << std::endl;
                 return_val = ConstantFP::get(Type::getDoubleTy(*TheContext) ,std::stof(context->FLOAT_LITERAL()->getText()));
             }
             return return_val;
@@ -620,7 +622,7 @@ namespace Aluminum {
                 return LogError("Something went wrong trying to reference a variable");
             }
             std::string var_id = context->IDENTIFIER()->getText();
-            std::cout << "referencing var: " << var_id << std::endl;
+            // std::cout << "referencing var: " << var_id << std::endl;
             AllocaInst* var = NamedValues[var_id];
             if(!var) {
                 return LogError("Unknown variable referenced");
